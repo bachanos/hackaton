@@ -57,6 +57,8 @@ function App() {
   const [visionStatus, setVisionStatus] = useState<string>('disconnected');
   const [webcamStream, setWebcamStream] = useState<MediaStream | null>(null);
   const [webcamActive, setWebcamActive] = useState(false);
+  const [aiMode, setAiMode] = useState<string>('mock');
+  const [aiStatus, setAiStatus] = useState<any>(null);
 
   // Cargar imagen NASA APOD y plantas al inicio
   useEffect(() => {

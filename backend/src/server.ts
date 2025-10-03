@@ -1,5 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+// Cargar variables de entorno
+dotenv.config({ path: '../.env' });
 
 // Interfaces para tipar las respuestas de las APIs
 interface OpenMeteoResponse {
@@ -24,6 +28,21 @@ interface NasaApodResponse {
 
 const app = express();
 const PORT = 3001;
+
+// Configuración del servicio de IA
+const AI_CONFIG = {
+  // Cambiar entre 'mock' y 'roboflow'
+  mode: process.env.AI_MODE || 'mock',
+
+  // URLs de servicios
+  mockUrl: 'http://localhost:5001/classify',
+  roboflowUrl: 'https://detect.roboflow.com/plant-detection-jxwat/1',
+  roboflowApiKey: process.env.ROBOFLOW_API_KEY || '',
+
+  // Configuraciones adicionales
+  timeout: 10000, // 10 segundos
+  retryWithMock: true, // Si Roboflow falla, usar mock como fallback
+};
 
 // Middleware
 app.use(cors());
@@ -62,6 +81,85 @@ const getCachedData = (key: string) => {
 
 const setCachedData = (key: string, data: any) => {
   cache.set(key, { data, timestamp: Date.now() });
+};
+
+// Funciones para servicios de IA
+const callMockService = async (imageData: any) => {
+  console.log('🤖 Usando servicio Mock AI...');
+  const response = await fetch(AI_CONFIG.mockUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(imageData),
+    signal: AbortSignal.timeout(AI_CONFIG.timeout),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Mock service error: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+const callRoboflowService = async (imageData: any) => {
+  console.log('🚀 Usando Roboflow AI Service...');
+
+  if (!AI_CONFIG.roboflowApiKey) {
+    throw new Error('Roboflow API key not configured');
+  }
+
+  // Convertir imagen a formato que espera Roboflow
+  const roboflowData = {
+    image: imageData.image || imageData, // Asumiendo que viene en base64
+  };
+
+  const response = await fetch(
+    `${AI_CONFIG.roboflowUrl}?api_key=${AI_CONFIG.roboflowApiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(roboflowData),
+      signal: AbortSignal.timeout(AI_CONFIG.timeout),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Roboflow service error: ${response.status}`);
+  }
+
+  const result = (await response.json()) as any;
+
+  // Convertir respuesta de Roboflow al formato esperado
+  return {
+    top: result.predictions?.[0]?.class || 'romero',
+    confidence: result.predictions?.[0]?.confidence || 0.0,
+    timestamp: new Date().toISOString(),
+    service: 'roboflow',
+    raw_response: result,
+  };
+};
+
+const classifyPlant = async (imageData: any) => {
+  try {
+    if (AI_CONFIG.mode === 'roboflow') {
+      try {
+        return await callRoboflowService(imageData);
+      } catch (error) {
+        console.warn('⚠️ Roboflow service failed:', error);
+
+        if (AI_CONFIG.retryWithMock) {
+          console.log('🔄 Fallback to mock service...');
+          const mockResult = (await callMockService(imageData)) as any;
+          return { ...mockResult, fallback: true };
+        }
+        throw error;
+      }
+    } else {
+      return await callMockService(imageData);
+    }
+  } catch (error) {
+    console.error('❌ Plant classification failed:', error);
+    throw error;
+  }
 };
 
 // Endpoint principal: Cálculo de riego
@@ -155,27 +253,14 @@ app.get('/api/plants', (req, res) => {
   });
 });
 
-// Endpoint para clasificación de plantas via IA
+// Endpoint para clasificación de plantas via IA (Híbrido: Mock + Roboflow)
 app.post('/api/classify-plant', async (req, res) => {
   try {
-    const PLANT_VISION_URL = 'http://localhost:5001/classify';
+    console.log(`🤖 Clasificando planta usando modo: ${AI_CONFIG.mode}`);
 
-    console.log('🤖 Solicitando clasificación de planta...');
-
-    const response = await fetch(PLANT_VISION_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(req.body), // Reenviar datos de imagen
-    });
-
-    if (!response.ok) {
-      throw new Error(`Plant Vision service error: ${response.status}`);
-    }
-
-    const aiResult = (await response.json()) as any;
-    const detectedPlant = aiResult.top || 'romero'; // fallback a romero
+    // Usar el sistema híbrido de clasificación
+    const aiResult = await classifyPlant(req.body);
+    const detectedPlant = aiResult.top || 'romero';
     const confidence = aiResult.confidence || 0.0;
 
     // Verificar si la planta detectada existe en nuestro sistema
@@ -195,6 +280,8 @@ app.post('/api/classify-plant', async (req, res) => {
       plant_info:
         PLANT_COEFFICIENTS[finalPlant as keyof typeof PLANT_COEFFICIENTS],
       ai_response: aiResult,
+      service_used: aiResult.service || AI_CONFIG.mode,
+      fallback_used: aiResult.fallback || false,
       timestamp: new Date().toISOString(),
     };
 
@@ -221,7 +308,7 @@ app.post('/api/classify-plant', async (req, res) => {
 // Endpoint para obtener última clasificación del servicio Python
 app.get('/api/plant-status', async (req, res) => {
   try {
-    const PLANT_VISION_HEALTH_URL = 'http://localhost:5000/health';
+    const PLANT_VISION_HEALTH_URL = 'http://localhost:5001/health';
 
     const response = await fetch(PLANT_VISION_HEALTH_URL);
     const healthData = (await response.json()) as any;
@@ -240,6 +327,38 @@ app.get('/api/plant-status', async (req, res) => {
       error: 'Plant Vision service no disponible',
     });
   }
+});
+
+// Endpoint para cambiar el modo de IA (mock/roboflow)
+app.post('/api/ai-mode', (req, res) => {
+  const { mode } = req.body;
+
+  if (!mode || !['mock', 'roboflow'].includes(mode)) {
+    return res.status(400).json({
+      error: 'Modo inválido. Usar "mock" o "roboflow"',
+    });
+  }
+
+  AI_CONFIG.mode = mode;
+  console.log(`🔄 Modo de IA cambiado a: ${mode}`);
+
+  res.json({
+    message: `Modo cambiado a ${mode}`,
+    currentMode: AI_CONFIG.mode,
+    roboflowConfigured: !!AI_CONFIG.roboflowApiKey,
+  });
+});
+
+// Endpoint para obtener configuración actual del sistema IA
+app.get('/api/ai-status', (req, res) => {
+  res.json({
+    currentMode: AI_CONFIG.mode,
+    availableModes: ['mock', 'roboflow'],
+    roboflowConfigured: !!AI_CONFIG.roboflowApiKey,
+    mockServiceUrl: AI_CONFIG.mockUrl,
+    roboflowUrl: AI_CONFIG.roboflowUrl,
+    retryWithMock: AI_CONFIG.retryWithMock,
+  });
 });
 
 // Endpoint NASA APOD (Astronomy Picture of the Day)
