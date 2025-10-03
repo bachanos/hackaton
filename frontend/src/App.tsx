@@ -149,42 +149,60 @@ function App() {
     console.log(`📸 Imagen guardada: plant_detection_${timestamp}.png`);
 
     try {
-      // Enviar solicitud de clasificación
+      // Usar nuestro backend con formato correcto
+      console.log('� Enviando a nuestro backend...');
+
       const response = await axios.post('/api/classify-plant', {
-        image: imageData // Enviar la imagen capturada
+        image: imageData // Enviar imagen completa con data:image prefix
       });
 
-      if (response.data.plant_used) {
-        setSelectedPlant(response.data.plant_used);
+      console.log('🔍 Respuesta del backend:', response.data);
+
+      // Procesar respuesta
+      if (response.data.predictions && response.data.predictions.length > 0) {
+        const topPrediction = response.data.predictions[0];
+        const detectedPlant = topPrediction.class || 'romero';
+        const confidence = topPrediction.confidence || 0.0;
+
+        // Usar la planta detectada si existe en nuestro sistema, sino romero por defecto
+        const plantToUse = ['menta', 'romero'].includes(detectedPlant) ? detectedPlant : 'romero';
+
+        setSelectedPlant(plantToUse);
         setLastDetection({
-          plant: response.data.detected,
-          confidence: response.data.confidence,
-          timestamp: response.data.timestamp
+          plant: detectedPlant,
+          confidence: confidence,
+          timestamp: new Date().toISOString()
         });
 
         // Limpiar error en caso de éxito
         setError(null);
 
+        console.log(`🌿 Roboflow detectó: ${detectedPlant} (${(confidence * 100).toFixed(1)}%) -> Usando: ${plantToUse}`);
+
         // Automáticamente recalcular el riego con la nueva planta
         setTimeout(() => {
           fetchWateringData();
         }, 500);
+      } else {
+        setError('❌ Roboflow no detectó ninguna planta');
       }
 
     } catch (error: any) {
       console.error('Error en detección de planta:', error);
 
       // Mostrar error específico según el tipo
-      if (error.response?.status === 413) {
+      if (error.code === 'ERR_NETWORK') {
+        setError('❌ Error CORS: No se puede conectar directamente a Roboflow desde el navegador.');
+      } else if (error.response?.status === 413) {
         setError('❌ Imagen demasiado grande. Intenta con menor resolución.');
       } else if (error.response?.status >= 500) {
-        setError('❌ Error del servidor. Verifica que los servicios estén activos.');
+        setError('❌ Error del servidor Roboflow.');
       } else if (error.response?.status === 400) {
-        setError('❌ Error en el formato de la imagen.');
+        setError(`❌ Error Roboflow: ${error.response?.data?.message || 'Formato de imagen inválido'}`);
       } else if (error.code === 'NETWORK_ERROR' || !error.response) {
-        setError('❌ Error de conexión. Verifica que el backend esté funcionando.');
+        setError('❌ Error de conexión con Roboflow.');
       } else {
-        setError(`❌ Error en detección: ${error.response?.data?.error || error.message}`);
+        setError(`❌ Error en detección: ${error.response?.data?.message || error.message}`);
       }
     } finally {
       setVisionLoading(false);
@@ -251,14 +269,34 @@ function App() {
     if (!video || !webcamActive) return null;
 
     const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+
+    // Limitar tamaño máximo para evitar imágenes demasiado grandes
+    const maxWidth = 640;
+    const maxHeight = 480;
+
+    let { videoWidth, videoHeight } = video;
+
+    // Redimensionar si es necesario manteniendo proporción
+    if (videoWidth > maxWidth || videoHeight > maxHeight) {
+      const ratio = Math.min(maxWidth / videoWidth, maxHeight / videoHeight);
+      videoWidth = Math.floor(videoWidth * ratio);
+      videoHeight = Math.floor(videoHeight * ratio);
+    }
+
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    ctx.drawImage(video, 0, 0);
-    return canvas.toDataURL('image/png');
+    ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+    // Usar JPEG con calidad reducida para menor tamaño
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+    console.log(`📸 Imagen capturada: ${videoWidth}x${videoHeight}, tamaño: ${dataUrl.length} chars`);
+
+    return dataUrl;
   };
 
   // Cleanup al desmontar el componente

@@ -109,25 +109,52 @@ const callRoboflowService = async (imageData: any) => {
   }
 
   // Convertir imagen a formato que espera Roboflow
-  const roboflowData = {
-    image: imageData.image || imageData, // Asumiendo que viene en base64
-  };
+  let imageBase64 = imageData.image || imageData;
+
+  console.log(
+    '🔍 Imagen original recibida (primeros 50 chars):',
+    typeof imageBase64 === 'string'
+      ? imageBase64.substring(0, 50)
+      : 'No es string'
+  );
+
+  // Roboflow quiere SOLO base64 puro, sin prefijos
+  if (typeof imageBase64 === 'string' && imageBase64.startsWith('data:image')) {
+    // Quitar el prefijo data URL si existe
+    imageBase64 = imageBase64.split(',')[1];
+    console.log('📤 Removido prefijo data URL');
+  }
+
+  console.log(
+    '📤 Enviando a Roboflow imagen de tamaño:',
+    imageBase64 ? imageBase64.length : 0
+  );
+  console.log(
+    '📤 Formato final (primeros 50 chars):',
+    imageBase64.substring(0, 50)
+  );
 
   const response = await fetch(
     `${AI_CONFIG.roboflowUrl}?api_key=${AI_CONFIG.roboflowApiKey}`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(roboflowData),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: imageBase64, // Enviar base64 directamente, no JSON
       signal: AbortSignal.timeout(AI_CONFIG.timeout),
     }
   );
 
   if (!response.ok) {
-    throw new Error(`Roboflow service error: ${response.status}`);
+    const errorText = await response.text();
+    console.log('❌ Error de Roboflow:', response.status, errorText);
+    throw new Error(
+      `Roboflow service error: ${response.status} - ${errorText}`
+    );
   }
 
   const result = (await response.json()) as any;
+
+  console.log('🔍 Respuesta RAW de Roboflow:', JSON.stringify(result, null, 2));
 
   // Convertir respuesta de Roboflow al formato esperado
   return {
@@ -254,54 +281,32 @@ app.get('/api/plants', (req, res) => {
   });
 });
 
-// Endpoint para clasificación de plantas via IA (Híbrido: Mock + Roboflow)
+// TEMPORAL: Endpoint simplificado para debugging - llamar directamente a Roboflow
 app.post('/api/classify-plant', async (req, res) => {
   try {
-    console.log(`🤖 Clasificando planta usando modo: ${AI_CONFIG.mode}`);
+    console.log('🔍 DEBUGGING: Llamando directamente a Roboflow...');
 
-    // Usar el sistema híbrido de clasificación
-    const aiResult = await classifyPlant(req.body);
-    const detectedPlant = aiResult.top || 'romero';
-    const confidence = aiResult.confidence || 0.0;
-
-    // Verificar si la planta detectada existe en nuestro sistema
-    const plantExists = detectedPlant in PLANT_COEFFICIENTS;
-    const finalPlant = plantExists ? detectedPlant : 'romero';
-
-    if (!plantExists) {
-      console.log(
-        `⚠️ Planta '${detectedPlant}' no reconocida, usando romero por defecto`
-      );
-    }
-
-    const result = {
-      detected: detectedPlant,
-      confidence: confidence,
-      plant_used: finalPlant,
-      plant_info:
-        PLANT_COEFFICIENTS[finalPlant as keyof typeof PLANT_COEFFICIENTS],
-      ai_response: aiResult,
-      service_used: aiResult.service || AI_CONFIG.mode,
-      fallback_used: aiResult.fallback || false,
-      timestamp: new Date().toISOString(),
-    };
+    // Llamar directamente a Roboflow sin fallbacks
+    const roboflowResult = await callRoboflowService(req.body);
 
     console.log(
-      `🌿 IA detectó: ${detectedPlant} (${(confidence * 100).toFixed(
-        1
-      )}%) -> Usando: ${finalPlant}`
+      '🔍 DEBUGGING: Respuesta de Roboflow:',
+      JSON.stringify(roboflowResult, null, 2)
     );
-    res.json(result);
-  } catch (error) {
-    console.error('Error en clasificación de planta:', error);
+
+    // Devolver la respuesta RAW de Roboflow para debugging
+    res.json({
+      debug_mode: true,
+      roboflow_raw_response: roboflowResult,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    console.error('❌ DEBUGGING: Error directo de Roboflow:', error);
     res.status(500).json({
-      error: 'Error al clasificar la planta',
-      fallback: {
-        detected: 'romero',
-        confidence: 0.5,
-        plant_used: 'romero',
-        plant_info: PLANT_COEFFICIENTS.romero,
-      },
+      debug_mode: true,
+      error: error.message || 'Error desconocido',
+      error_details: error,
+      timestamp: new Date().toISOString(),
     });
   }
 });
