@@ -60,12 +60,16 @@ function App() {
   const [aiMode, setAiMode] = useState<string>('mock');
   const [aiStatus, setAiStatus] = useState<any>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
+  const [selectedCameraId, setSelectedCameraId] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
   // Cargar imagen NASA APOD y plantas al inicio
   useEffect(() => {
     fetchApod();
     fetchPlants();
     checkVisionStatus();
+    enumerateCameras();
   }, []);
 
   const fetchApod = async () => {
@@ -103,23 +107,46 @@ function App() {
       const response = await axios.get('/api/plant-status');
       setVisionStatus(response.data.status);
     } catch (error) {
+      console.error('Error checking vision status:', error);
       setVisionStatus('disconnected');
+    }
+  };
+
+  const enumerateCameras = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      setAvailableCameras(videoDevices);
+
+      // Seleccionar primera cámara por defecto si no hay ninguna seleccionada
+      if (videoDevices.length > 0 && !selectedCameraId) {
+        setSelectedCameraId(videoDevices[0].deviceId);
+      }
+
+      console.log('📹 Cámaras disponibles:', videoDevices.map(cam => cam.label || 'Cámara sin nombre'));
+    } catch (error) {
+      console.error('Error enumerando cámaras:', error);
     }
   };
 
   const detectPlantWithCamera = async () => {
     setVisionLoading(true);
+    setError(null); // Limpiar errores previos
 
     // Capturar imagen actual de la webcam
     const imageData = captureImage();
-    if (imageData) {
-      setCapturedImage(imageData);
-
-      // Generar timestamp y descargar automáticamente
-      const timestamp = generateTimestamp();
-      downloadImage(imageData, timestamp);
-      console.log(`📸 Imagen guardada: plant_detection_${timestamp}.png`);
+    if (!imageData) {
+      setError('❌ No se pudo capturar imagen de la cámara');
+      setVisionLoading(false);
+      return;
     }
+
+    setCapturedImage(imageData);
+
+    // Generar timestamp y descargar automáticamente
+    const timestamp = generateTimestamp();
+    downloadImage(imageData, timestamp);
+    console.log(`📸 Imagen guardada: plant_detection_${timestamp}.png`);
 
     try {
       // Enviar solicitud de clasificación
@@ -135,14 +162,30 @@ function App() {
           timestamp: response.data.timestamp
         });
 
+        // Limpiar error en caso de éxito
+        setError(null);
+
         // Automáticamente recalcular el riego con la nueva planta
         setTimeout(() => {
           fetchWateringData();
         }, 500);
       }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error en detección de planta:', error);
+
+      // Mostrar error específico según el tipo
+      if (error.response?.status === 413) {
+        setError('❌ Imagen demasiado grande. Intenta con menor resolución.');
+      } else if (error.response?.status >= 500) {
+        setError('❌ Error del servidor. Verifica que los servicios estén activos.');
+      } else if (error.response?.status === 400) {
+        setError('❌ Error en el formato de la imagen.');
+      } else if (error.code === 'NETWORK_ERROR' || !error.response) {
+        setError('❌ Error de conexión. Verifica que el backend esté funcionando.');
+      } else {
+        setError(`❌ Error en detección: ${error.response?.data?.error || error.message}`);
+      }
     } finally {
       setVisionLoading(false);
     }
@@ -150,13 +193,15 @@ function App() {
 
   const startWebcam = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      const constraints: MediaStreamConstraints = {
         video: {
           width: { ideal: 640 },
           height: { ideal: 480 },
-          facingMode: 'environment' // Preferir cámara trasera si está disponible
+          deviceId: selectedCameraId ? { exact: selectedCameraId } : undefined
         }
-      });
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setWebcamStream(stream);
       setWebcamActive(true);
       setVisionStatus('connected');
@@ -326,6 +371,27 @@ function App() {
                   </div>
                 </div>
 
+                {/* Selector de cámara */}
+                <div className="camera-selector">
+                  <label htmlFor="camera-select">📹 Seleccionar cámara:</label>
+                  <select
+                    id="camera-select"
+                    value={selectedCameraId}
+                    onChange={(e) => setSelectedCameraId(e.target.value)}
+                    disabled={webcamActive}
+                    className="camera-dropdown"
+                  >
+                    {availableCameras.map((camera, index) => (
+                      <option key={camera.deviceId} value={camera.deviceId}>
+                        {camera.label || `Cámara ${index + 1}`}
+                      </option>
+                    ))}
+                  </select>
+                  {webcamActive && (
+                    <p className="camera-hint">💡 Para cambiar cámara, para primero la actual</p>
+                  )}
+                </div>
+
                 <div className="vision-controls">
                   <button
                     className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
@@ -358,6 +424,13 @@ function App() {
                     </div>
                   )}
                 </div>
+
+                {/* Mostrar errores */}
+                {error && (
+                  <div className="error-message">
+                    {error}
+                  </div>
+                )}
 
                 {!webcamActive && (
                   <p className="vision-help">

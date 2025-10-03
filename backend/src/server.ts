@@ -36,7 +36,7 @@ const AI_CONFIG = {
 
   // URLs de servicios
   mockUrl: 'http://localhost:5001/classify',
-  roboflowUrl: 'https://detect.roboflow.com/plant-detection-jxwat/1',
+  roboflowUrl: 'https://classify.roboflow.com/hierbasclasificacion-1zi8c/4',
   roboflowApiKey: process.env.ROBOFLOW_API_KEY || '',
 
   // Configuraciones adicionales
@@ -46,7 +46,8 @@ const AI_CONFIG = {
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' })); // Aumentar límite para imágenes
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Coordenadas por defecto (EINA Zaragoza - 41°41'01"N 0°53'17"O)
 const DEFAULT_LATITUDE = 41.6836;

@@ -7,3 +7,6 @@ El término que buscas es Evapotranspiración (ET). Es la métrica estándar en 
 Transpiración: El agua que la planta "suda" a través de sus hojas.
 Evaporación: El agua que se evapora directamente de la superficie de la tierra de la maceta.
 
+
+Error fetching NASA APOD: Error: Failed to fetch NASA APOD
+    at /Users/agualis/experimental/nasa/backend/src/server.ts:379:15

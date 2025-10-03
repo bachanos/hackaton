@@ -247,6 +247,29 @@ body {
   opacity: 0.7;
 }
 
+.error-message {
+  background: rgba(244, 67, 54, 0.2);
+  border: 1px solid #f44336;
+  color: #ff6b6b;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0.5rem 0;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .vision-btn {
   background: linear-gradient(45deg, #ba55d3, #9932cc);
   color: white;
@@ -412,6 +435,50 @@ body {
   .camera-preview-container {
     grid-template-columns: 1fr;
   }
+}
+
+/* Estilos para selector de cámara */
+.camera-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(186, 85, 211, 0.3);
+}
+
+.camera-selector label {
+  color: #ba55d3;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.camera-dropdown {
+  padding: 0.5rem;
+  border: 1px solid rgba(186, 85, 211, 0.5);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 0.9rem;
+}
+
+.camera-dropdown:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.camera-dropdown option {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+}
+
+.camera-hint {
+  font-size: 0.8rem;
+  color: rgba(255, 193, 7, 0.8);
+  margin: 0;
+  font-style: italic;
 }
 
 .coordinates {
