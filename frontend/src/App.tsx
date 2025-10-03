@@ -59,6 +59,7 @@ function App() {
   const [webcamActive, setWebcamActive] = useState(false);
   const [aiMode, setAiMode] = useState<string>('mock');
   const [aiStatus, setAiStatus] = useState<any>(null);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
   // Cargar imagen NASA APOD y plantas al inicio
   useEffect(() => {
@@ -108,9 +109,23 @@ function App() {
 
   const detectPlantWithCamera = async () => {
     setVisionLoading(true);
+
+    // Capturar imagen actual de la webcam
+    const imageData = captureImage();
+    if (imageData) {
+      setCapturedImage(imageData);
+
+      // Generar timestamp y descargar automáticamente
+      const timestamp = generateTimestamp();
+      downloadImage(imageData, timestamp);
+      console.log(`📸 Imagen guardada: plant_detection_${timestamp}.png`);
+    }
+
     try {
-      // Enviar solicitud de clasificación (sin imagen por ahora, el servicio Python maneja la cámara)
-      const response = await axios.post('/api/classify-plant', {});
+      // Enviar solicitud de clasificación
+      const response = await axios.post('/api/classify-plant', {
+        image: imageData // Enviar la imagen capturada
+      });
 
       if (response.data.plant_used) {
         setSelectedPlant(response.data.plant_used);
@@ -158,6 +173,47 @@ function App() {
       setWebcamActive(false);
       setVisionStatus('disconnected');
     }
+  };
+
+  // Función para generar timestamp human-friendly
+  const generateTimestamp = (): string => {
+    const now = new Date();
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+    const dayName = days[now.getDay()];
+    const day = now.getDate();
+    const month = months[now.getMonth()];
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+
+    return `${dayName}-${day}-${month}-${hours}${minutes}`;
+  };
+
+  // Función para descargar imagen automáticamente
+  const downloadImage = (imageData: string, timestamp: string) => {
+    const link = document.createElement('a');
+    link.download = `plant_detection_${timestamp}.png`;
+    link.href = imageData;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Función para capturar imagen de la webcam
+  const captureImage = (): string | null => {
+    const video = document.querySelector('video.webcam-feed') as HTMLVideoElement;
+    if (!video || !webcamActive) return null;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    ctx.drawImage(video, 0, 0);
+    return canvas.toDataURL('image/png');
   };
 
   // Cleanup al desmontar el componente
@@ -231,24 +287,43 @@ function App() {
             <div className="vision-panel">
               <h4>📹 Detección Automática con IA</h4>
               <div className="vision-content">
-                <div className="webcam-container">
-                  {webcamActive && webcamStream ? (
-                    <video
-                      ref={(video) => {
-                        if (video && webcamStream) {
-                          video.srcObject = webcamStream;
-                        }
-                      }}
-                      autoPlay
-                      muted
-                      className="webcam-feed"
-                    />
-                  ) : (
-                    <div className="webcam-placeholder">
-                      <div className="camera-icon">📷</div>
-                      <p>Cámara desconectada</p>
-                    </div>
-                  )}
+                <div className="camera-preview-container">
+                  <div className="webcam-container">
+                    {webcamActive && webcamStream ? (
+                      <video
+                        ref={(video) => {
+                          if (video && webcamStream) {
+                            video.srcObject = webcamStream;
+                          }
+                        }}
+                        autoPlay
+                        muted
+                        className="webcam-feed"
+                      />
+                    ) : (
+                      <div className="webcam-placeholder">
+                        <div className="camera-icon">📷</div>
+                        <p>Cámara desconectada</p>
+                      </div>
+                    )}
+                    <div className="camera-label">📹 Video en tiempo real</div>
+                  </div>
+
+                  <div className="captured-image-container">
+                    {capturedImage ? (
+                      <img
+                        src={capturedImage}
+                        alt="Imagen capturada"
+                        className="captured-image"
+                      />
+                    ) : (
+                      <div className="capture-placeholder">
+                        <div className="capture-icon">📸</div>
+                        <p>Imagen capturada aparecerá aquí</p>
+                      </div>
+                    )}
+                    <div className="camera-label">📸 Última captura</div>
+                  </div>
                 </div>
 
                 <div className="vision-controls">
