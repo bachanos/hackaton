@@ -1,0 +1,447 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+.app {
+  min-height: 100vh;
+  position: relative;
+}
+
+.overlay {
+  min-height: 100vh;
+  background: rgba(0, 0, 20, 0.85);
+  backdrop-filter: blur(2px);
+  color: white;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, #00d4ff, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.config-panel {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.config-panel h3 {
+  margin-bottom: 1rem;
+  color: #00d4ff;
+}
+
+.location-info {
+  margin-bottom: 1.5rem;
+}
+
+.default-location {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  text-align: center;
+}
+
+.default-location h4 {
+  margin: 0 0 0.5rem 0;
+  color: #00ff88;
+  font-size: 1.1rem;
+}
+
+.location-details {
+  margin: 0.5rem 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.coords-display {
+  margin: 0.5rem 0 0 0;
+  font-family: 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #00d4ff;
+}
+
+.plant-selector {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(34, 139, 34, 0.1));
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.plant-selector h4 {
+  margin: 0 0 1rem 0;
+  color: #00ff88;
+  text-align: center;
+}
+
+.plant-options {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.plant-btn {
+  flex: 1;
+  min-width: 200px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.plant-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(0, 255, 136, 0.5);
+  transform: translateY(-2px);
+}
+
+.plant-btn.active {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 255, 0.2));
+  border-color: #00ff88;
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+}
+
+.plant-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.plant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.plant-desc {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.water-badge {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-weight: bold;
+  width: fit-content;
+}
+
+.water-badge.alta {
+  background: rgba(0, 212, 255, 0.3);
+  color: #00d4ff;
+}
+
+.water-badge.media {
+  background: rgba(255, 193, 7, 0.3);
+  color: #ffc107;
+}
+
+.water-badge.baja {
+  background: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+}
+
+.coordinates {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.coordinates label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.coordinates input {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+}
+
+.coordinates input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.reset-btn {
+  background: linear-gradient(45deg, rgba(255, 136, 0, 0.8), rgba(255, 68, 68, 0.8));
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 12px rgba(255, 136, 0, 0.3);
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgba(255, 136, 0, 0.4);
+}
+
+.calculate-btn {
+  background: linear-gradient(45deg, #00d4ff, #00ff88);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+  flex: 1;
+  min-width: 200px;
+}
+
+.calculate-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+}
+
+.calculate-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.result-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.result-card:hover {
+  transform: translateY(-5px);
+}
+
+.main-result {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 136, 0.2));
+}
+
+.big-number {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  background: linear-gradient(45deg, #00d4ff, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.plant-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #00ff88;
+}
+
+.plant-coeff {
+  font-weight: bold;
+  color: #00d4ff;
+  font-size: 0.9rem;
+}
+
+.plant-desc-small {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.number {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+  color: #00d4ff;
+}
+
+.chart-container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.chart-container h3 {
+  margin-bottom: 1rem;
+  color: #00d4ff;
+}
+
+.apod-panel {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.apod-panel h3 {
+  margin-bottom: 1rem;
+  color: #00d4ff;
+}
+
+.apod-content h4 {
+  margin-bottom: 0.5rem;
+  color: #00ff88;
+}
+
+.apod-date {
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+.apod-thumbnail {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 10px;
+  margin: 1rem 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.apod-explanation {
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.footer {
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .coordinates {
+    flex-direction: column;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .reset-btn {
+    width: 100%;
+  }
+
+  .calculate-btn {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .default-location h4 {
+    font-size: 1rem;
+  }
+
+  .location-details {
+    font-size: 0.85rem;
+  }
+
+  .coords-display {
+    font-size: 0.8rem;
+  }
+
+  .big-number {
+    font-size: 2rem;
+  }
+
+  .number {
+    font-size: 1.5rem;
+  }
+
+  .plant-options {
+    flex-direction: column;
+  }
+  
+  .plant-btn {
+    min-width: auto;
+  }
+  
+  .plant-summary {
+    text-align: left;
+  }
+  
+  .overlay {
+    padding: 10px;
+  }
+}

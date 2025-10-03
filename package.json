@@ -1,0 +1,26 @@
+{
+  "name": "mvp-riego-automatizado",
+  "version": "1.0.0",
+  "description": "MVP de sistema de riego automatizado con APIs de NASA y datos meteorológicos",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "clean": "rm -rf backend/node_modules frontend/node_modules backend/dist"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "nasa",
+    "riego",
+    "automatizado",
+    "mvp",
+    "hackathon"
+  ],
+  "author": "",
+  "license": "MIT"
+}
