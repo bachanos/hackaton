@@ -158,9 +158,16 @@ function App() {
 
       console.log('🔍 Respuesta del backend:', response.data);
 
-      // Procesar respuesta
-      if (response.data.predictions && response.data.predictions.length > 0) {
-        const topPrediction = response.data.predictions[0];
+      // Procesar respuesta, compatible con modo debug y normal
+      let predictions = [];
+      if (response.data.debug_mode && response.data.roboflow_raw_response?.raw_response) {
+        predictions = response.data.roboflow_raw_response.raw_response.predictions || [];
+      } else if (response.data.predictions) {
+        predictions = response.data.predictions;
+      }
+
+      if (predictions.length > 0) {
+        const topPrediction = predictions[0];
         const detectedPlant = topPrediction.class || 'romero';
         const confidence = topPrediction.confidence || 0.0;
 
