@@ -36,8 +36,16 @@ const POT_DIAMETER_CM = 10;
 
 // Coeficientes de cultivo (Kc) para diferentes plantas
 const PLANT_COEFFICIENTS = {
-  menta: { kc: 1.2, name: '🌿 Menta', description: 'Necesita mucha agua, hojas jugosas' },
-  romero: { kc: 0.6, name: '🌱 Romero', description: 'Resistente a sequía, aromática mediterránea' }
+  menta: {
+    kc: 1.2,
+    name: '🌿 Menta',
+    description: 'Necesita mucha agua, hojas jugosas',
+  },
+  romero: {
+    kc: 0.6,
+    name: '🌱 Romero',
+    description: 'Resistente a sequía, aromática mediterránea',
+  },
 };
 
 // Cache simple para evitar muchas llamadas a las APIs
@@ -62,9 +70,11 @@ app.get('/api/watering-calculation', async (req, res) => {
     const lat = parseFloat(req.query.lat as string) || DEFAULT_LATITUDE;
     const lon = parseFloat(req.query.lon as string) || DEFAULT_LONGITUDE;
     const plantType = (req.query.plant as string) || 'menta';
-    
+
     // Validar tipo de planta
-    const plantData = PLANT_COEFFICIENTS[plantType as keyof typeof PLANT_COEFFICIENTS] || PLANT_COEFFICIENTS.menta;
+    const plantData =
+      PLANT_COEFFICIENTS[plantType as keyof typeof PLANT_COEFFICIENTS] ||
+      PLANT_COEFFICIENTS.menta;
 
     const cacheKey = `watering-${lat}-${lon}-${plantType}`;
     let data = getCachedData(cacheKey);
@@ -111,14 +121,14 @@ app.get('/api/watering-calculation', async (req, res) => {
           type: plantType,
           name: plantData.name,
           description: plantData.description,
-          coefficient: plantData.kc
+          coefficient: plantData.kc,
         },
         calculation: {
           totalET0: totalET, // ET₀ de referencia
           etcPlant: etcPlant, // ETc específica de la planta
           surfaceM2,
           requiredLitres,
-          plantCoefficient: plantData.kc
+          plantCoefficient: plantData.kc,
         },
       };
 
@@ -140,9 +150,96 @@ app.get('/api/plants', (req, res) => {
       name: value.name,
       description: value.description,
       coefficient: value.kc,
-      waterNeed: value.kc > 1 ? 'Alta' : value.kc > 0.8 ? 'Media' : 'Baja'
-    }))
+      waterNeed: value.kc > 1 ? 'Alta' : value.kc > 0.8 ? 'Media' : 'Baja',
+    })),
   });
+});
+
+// Endpoint para clasificación de plantas via IA
+app.post('/api/classify-plant', async (req, res) => {
+  try {
+    const PLANT_VISION_URL = 'http://localhost:5001/classify';
+
+    console.log('🤖 Solicitando clasificación de planta...');
+
+    const response = await fetch(PLANT_VISION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req.body), // Reenviar datos de imagen
+    });
+
+    if (!response.ok) {
+      throw new Error(`Plant Vision service error: ${response.status}`);
+    }
+
+    const aiResult = (await response.json()) as any;
+    const detectedPlant = aiResult.top || 'romero'; // fallback a romero
+    const confidence = aiResult.confidence || 0.0;
+
+    // Verificar si la planta detectada existe en nuestro sistema
+    const plantExists = detectedPlant in PLANT_COEFFICIENTS;
+    const finalPlant = plantExists ? detectedPlant : 'romero';
+
+    if (!plantExists) {
+      console.log(
+        `⚠️ Planta '${detectedPlant}' no reconocida, usando romero por defecto`
+      );
+    }
+
+    const result = {
+      detected: detectedPlant,
+      confidence: confidence,
+      plant_used: finalPlant,
+      plant_info:
+        PLANT_COEFFICIENTS[finalPlant as keyof typeof PLANT_COEFFICIENTS],
+      ai_response: aiResult,
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log(
+      `🌿 IA detectó: ${detectedPlant} (${(confidence * 100).toFixed(
+        1
+      )}%) -> Usando: ${finalPlant}`
+    );
+    res.json(result);
+  } catch (error) {
+    console.error('Error en clasificación de planta:', error);
+    res.status(500).json({
+      error: 'Error al clasificar la planta',
+      fallback: {
+        detected: 'romero',
+        confidence: 0.5,
+        plant_used: 'romero',
+        plant_info: PLANT_COEFFICIENTS.romero,
+      },
+    });
+  }
+});
+
+// Endpoint para obtener última clasificación del servicio Python
+app.get('/api/plant-status', async (req, res) => {
+  try {
+    const PLANT_VISION_HEALTH_URL = 'http://localhost:5000/health';
+
+    const response = await fetch(PLANT_VISION_HEALTH_URL);
+    const healthData = (await response.json()) as any;
+
+    res.json({
+      vision_service: healthData,
+      backend_plants: Object.keys(PLANT_COEFFICIENTS),
+      status: 'connected',
+    });
+  } catch (error) {
+    console.error('Error conectando con Plant Vision:', error);
+    res.json({
+      vision_service: null,
+      backend_plants: Object.keys(PLANT_COEFFICIENTS),
+      status: 'disconnected',
+      error: 'Plant Vision service no disponible',
+    });
+  }
 });
 
 // Endpoint NASA APOD (Astronomy Picture of the Day)

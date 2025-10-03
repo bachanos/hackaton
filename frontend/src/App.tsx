@@ -52,11 +52,17 @@ function App() {
   const [coordinates, setCoordinates] = useState({ lat: 41.6836, lon: -0.8881 });
   const [selectedPlant, setSelectedPlant] = useState('menta');
   const [plants, setPlants] = useState<Plant[]>([]);
+  const [visionLoading, setVisionLoading] = useState(false);
+  const [lastDetection, setLastDetection] = useState<any>(null);
+  const [visionStatus, setVisionStatus] = useState<string>('disconnected');
+  const [webcamStream, setWebcamStream] = useState<MediaStream | null>(null);
+  const [webcamActive, setWebcamActive] = useState(false);
 
   // Cargar imagen NASA APOD y plantas al inicio
   useEffect(() => {
     fetchApod();
     fetchPlants();
+    checkVisionStatus();
   }, []);
 
   const fetchApod = async () => {
@@ -88,6 +94,78 @@ function App() {
       setLoading(false);
     }
   };
+
+  const checkVisionStatus = async () => {
+    try {
+      const response = await axios.get('/api/plant-status');
+      setVisionStatus(response.data.status);
+    } catch (error) {
+      setVisionStatus('disconnected');
+    }
+  };
+
+  const detectPlantWithCamera = async () => {
+    setVisionLoading(true);
+    try {
+      // Enviar solicitud de clasificación (sin imagen por ahora, el servicio Python maneja la cámara)
+      const response = await axios.post('/api/classify-plant', {});
+
+      if (response.data.plant_used) {
+        setSelectedPlant(response.data.plant_used);
+        setLastDetection({
+          plant: response.data.detected,
+          confidence: response.data.confidence,
+          timestamp: response.data.timestamp
+        });
+
+        // Automáticamente recalcular el riego con la nueva planta
+        setTimeout(() => {
+          fetchWateringData();
+        }, 500);
+      }
+
+    } catch (error) {
+      console.error('Error en detección de planta:', error);
+    } finally {
+      setVisionLoading(false);
+    }
+  };
+
+  const startWebcam = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+          facingMode: 'environment' // Preferir cámara trasera si está disponible
+        }
+      });
+      setWebcamStream(stream);
+      setWebcamActive(true);
+      setVisionStatus('connected');
+    } catch (error) {
+      console.error('Error accediendo a la webcam:', error);
+      setVisionStatus('disconnected');
+    }
+  };
+
+  const stopWebcam = () => {
+    if (webcamStream) {
+      webcamStream.getTracks().forEach(track => track.stop());
+      setWebcamStream(null);
+      setWebcamActive(false);
+      setVisionStatus('disconnected');
+    }
+  };
+
+  // Cleanup al desmontar el componente
+  useEffect(() => {
+    return () => {
+      if (webcamStream) {
+        webcamStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [webcamStream]);
 
   // Preparar datos para el gráfico
   const chartData = wateringData?.hourlyForecast.temperatures.map((temp, index) => ({
@@ -124,7 +202,7 @@ function App() {
                 </p>
               </div>
             </div>
-            
+
             {/* Selector de plantas */}
             <div className="plant-selector">
               <h4>🌿 Tipo de Planta</h4>
@@ -146,7 +224,75 @@ function App() {
                 ))}
               </div>
             </div>
-            
+
+            {/* Panel de detección automática */}
+            <div className="vision-panel">
+              <h4>📹 Detección Automática con IA</h4>
+              <div className="vision-content">
+                <div className="webcam-container">
+                  {webcamActive && webcamStream ? (
+                    <video
+                      ref={(video) => {
+                        if (video && webcamStream) {
+                          video.srcObject = webcamStream;
+                        }
+                      }}
+                      autoPlay
+                      muted
+                      className="webcam-feed"
+                    />
+                  ) : (
+                    <div className="webcam-placeholder">
+                      <div className="camera-icon">📷</div>
+                      <p>Cámara desconectada</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="vision-controls">
+                  <button
+                    className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
+                    onClick={webcamActive ? stopWebcam : startWebcam}
+                  >
+                    {webcamActive ? '⏹️ Parar Cámara' : '▶️ Iniciar Cámara'}
+                  </button>
+
+                  <button
+                    className="vision-btn detect"
+                    onClick={detectPlantWithCamera}
+                    disabled={visionLoading || !webcamActive}
+                  >
+                    {visionLoading ? '🔍 Detectando...' : '📸 Detectar Planta'}
+                  </button>
+                </div>
+
+                <div className="vision-status">
+                  <span className={`status-indicator ${webcamActive ? 'connected' : 'disconnected'}`}>
+                    {webcamActive ? '🟢 Cámara activa' : '🔴 Cámara inactiva'}
+                  </span>
+                  {lastDetection && (
+                    <div className="last-detection">
+                      <span className="detection-result">
+                        Última detección: {lastDetection.plant} ({(lastDetection.confidence * 100).toFixed(1)}%)
+                      </span>
+                      <span className="detection-time">
+                        {new Date(lastDetection.timestamp).toLocaleTimeString()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {!webcamActive && (
+                  <p className="vision-help">
+                    💡 Para detectar plantas:
+                    <br />1. Haz clic en "Iniciar Cámara"
+                    <br />2. Apunta a tu planta y haz clic en "Detectar Planta"
+                    <br />3. El sistema identificará automáticamente el tipo
+                  </p>
+                )}
+              </div>
+            </div>
+
             <div className="coordinates">
               <label>
                 🌍 Latitud:

@@ -34,17 +34,52 @@ mvp-riego-automatizado/
 └── README.md
 ```
 
-## 🚀 Inicio Rápido
+## 🍎 Configuración en macOS (Mi Máquina)
 
-### 1. Instalación
+### Sistema usado para desarrollo:
+- **OS**: macOS (Mi desarrollo)
+- **Python**: 3.8+ requerido para Plant Vision
+- **Node.js**: Para backend y frontend
+- **Cámara**: Built-in webcam + soporte para GoPro USB
+
+### Setup inicial en Mac:
 ```bash
-# Instalar dependencias de todos los proyectos
+# 1. Verificar Python (necesario ≥3.8)
+python3 --version
+
+# 2. Si Python es viejo, instalar versión nueva
+brew install python@3.11
+
+# 3. Instalar dependencias Node.js
 npm run install:all
+
+# 4. Instalar dependencias Python para IA
+pip3 install -r plant-vision/requirements.txt
 ```
 
-### 2. Desarrollo
+## 🚀 Inicio Rápido
+
+### Opción A: Servicios individuales (4 terminales)
 ```bash
-# Ejecutar backend y frontend simultáneamente
+# Terminal 1: IA Mock (Puerto 5000)
+python3 plant-vision/mock_ai_server.py
+
+# Terminal 2: Backend (Puerto 3001)
+npm run dev:backend
+
+# Terminal 3: Frontend (Puerto 3000)
+npm run dev:frontend
+
+# Terminal 4: Webcam opcional
+python3 plant-vision/webcam_capture.py
+```
+
+### Opción B: Solo web (2 terminales)
+```bash
+# Terminal 1: IA Mock
+python3 plant-vision/mock_ai_server.py
+
+# Terminal 2: Backend + Frontend
 npm run dev
 ```
 
@@ -68,7 +103,7 @@ Calcula las necesidades de riego basado en coordenadas GPS.
 
 **Parámetros:**
 - `lat`: Latitud (opcional, default: EINA Zaragoza)
-- `lon`: Longitud (opcional, default: EINA Zaragoza)  
+- `lon`: Longitud (opcional, default: EINA Zaragoza)
 - `plant`: Tipo de planta (opcional, default: 'menta')
 
 **Ejemplo:**
@@ -120,7 +155,7 @@ Obtiene la lista de plantas disponibles con sus características.
   "plants": [
     {
       "id": "menta",
-      "name": "🌿 Menta", 
+      "name": "🌿 Menta",
       "description": "Necesita mucha agua, hojas jugosas",
       "coefficient": 1.2,
       "waterNeed": "Alta"
@@ -128,7 +163,7 @@ Obtiene la lista de plantas disponibles con sus características.
     {
       "id": "romero",
       "name": "🌱 Romero",
-      "description": "Resistente a sequía, aromática mediterránea", 
+      "description": "Resistente a sequía, aromática mediterránea",
       "coefficient": 0.6,
       "waterNeed": "Baja"
     }
