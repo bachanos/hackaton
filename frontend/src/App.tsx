@@ -348,27 +348,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Selector de cámara */}
-              <div className="camera-selector">
-                <label htmlFor="camera-select">📹 Seleccionar cámara:</label>
-                <select
-                  id="camera-select"
-                  value={selectedCameraId}
-                  onChange={(e) => setSelectedCameraId(e.target.value)}
-                  disabled={webcamActive}
-                  className="camera-dropdown"
-                >
-                  {availableCameras.map((camera, index) => (
-                    <option key={camera.deviceId} value={camera.deviceId}>
-                      {camera.label || `Cámara ${index + 1}`}
-                    </option>
-                  ))}
-                </select>
-                {webcamActive && (
-                  <p className="camera-hint">💡 Para cambiar cámara, para primero la actual</p>
-                )}
-              </div>
-
               <div className="vision-controls">
                 <button
                   className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
@@ -441,7 +420,34 @@ function App() {
 
           <UnifiedQuiz capturedImage={capturedImage} />
 
-
+          {/* Configuración de cámara */}
+          <div className="camera-settings-panel">
+            <h4>⚙️ Configuración de Cámara</h4>
+            <div className="camera-settings-content">
+              <div className="camera-selector">
+                <label htmlFor="camera-select">📹 Seleccionar cámara:</label>
+                <select
+                  id="camera-select"
+                  value={selectedCameraId}
+                  onChange={(e) => setSelectedCameraId(e.target.value)}
+                  disabled={webcamActive}
+                  className="camera-dropdown"
+                >
+                  {availableCameras.map((camera, index) => (
+                    <option key={camera.deviceId} value={camera.deviceId}>
+                      {camera.label || `Cámara ${index + 1}`}
+                    </option>
+                  ))}
+                </select>
+                {webcamActive && (
+                  <p className="camera-hint">💡 Para cambiar cámara, para primero la actual</p>
+                )}
+                {availableCameras.length === 0 && (
+                  <p className="camera-hint">🔍 Buscando cámaras disponibles...</p>
+                )}
+              </div>
+            </div>
+          </div>
 
         </main>
 

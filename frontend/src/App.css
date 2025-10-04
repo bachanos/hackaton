@@ -135,6 +135,77 @@ body {
   }
 }
 
+/* Panel de configuración de cámara */
+.camera-settings-panel {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  backdrop-filter: blur(10px);
+}
+
+.camera-settings-panel h4 {
+  color: #4ecdc4;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.camera-settings-content {
+  display: flex;
+  justify-content: center;
+}
+
+.camera-settings-panel .camera-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: 400px;
+}
+
+.camera-settings-panel .camera-selector label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+}
+
+.camera-settings-panel .camera-dropdown {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  min-width: 250px;
+  text-align: center;
+}
+
+.camera-settings-panel .camera-dropdown:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.camera-settings-panel .camera-hint {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0.5rem 0 0 0;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Responsive para configuración de cámara */
+@media (max-width: 640px) {
+  .camera-settings-panel {
+    padding: 1rem;
+    margin: 1rem;
+  }
+  
+  .camera-settings-panel .camera-dropdown {
+    min-width: 200px;
+  }
+}
+
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
