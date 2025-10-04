@@ -34,20 +34,13 @@ interface WateringData {
 
 
 
-interface Plant {
-  id: string;
-  name: string;
-  description: string;
-  coefficient: number;
-  waterNeed: string;
-}
+
 
 function App() {
   const [wateringData, setWateringData] = useState<WateringData | null>(null);
   const [loading, setLoading] = useState(false);
   const [coordinates, setCoordinates] = useState({ lat: 41.6836, lon: -0.8881 });
   const [selectedPlant, setSelectedPlant] = useState('menta');
-  const [plants, setPlants] = useState<Plant[]>([]);
   const [visionLoading, setVisionLoading] = useState(false);
   const [lastDetection, setLastDetection] = useState<any>(null);
   const [visionStatus, setVisionStatus] = useState<string>('disconnected');
@@ -62,7 +55,6 @@ function App() {
 
   // Cargar datos iniciales
   useEffect(() => {
-    fetchPlants();
     checkVisionStatus();
     enumerateCameras();
   }, []);
@@ -71,14 +63,7 @@ function App() {
 
 
 
-  const fetchPlants = async () => {
-    try {
-      const response = await axios.get('/api/plants');
-      setPlants(response.data.plants);
-    } catch (error) {
-      console.error('Error fetching plants:', error);
-    }
-  };
+
 
   const fetchWateringData = async () => {
     setLoading(true);
@@ -294,10 +279,6 @@ function App() {
           <p>Con tecnología de APIs de la NASA y datos meteorológicos en tiempo real</p>
         </header>
 
-
-
-        <UnifiedQuiz />
-
         <main className="main-content">
           {/* Panel de configuración */}
           <div className="config-panel">
@@ -314,27 +295,7 @@ function App() {
               </div>
             </div>
 
-            {/* Selector de plantas */}
-            <div className="plant-selector">
-              <h4>🌿 Tipo de Planta</h4>
-              <div className="plant-options">
-                {plants.map((plant) => (
-                  <button
-                    key={plant.id}
-                    className={`plant-btn ${selectedPlant === plant.id ? 'active' : ''}`}
-                    onClick={() => setSelectedPlant(plant.id)}
-                  >
-                    <div className="plant-name">{plant.name}</div>
-                    <div className="plant-info">
-                      <span className="plant-desc">{plant.description}</span>
-                      <span className={`water-badge ${plant.waterNeed.toLowerCase()}`}>
-                        {plant.waterNeed} agua
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
+
 
             {/* Panel de detección automática */}
             <div className="vision-panel">
@@ -562,6 +523,9 @@ function App() {
               </ResponsiveContainer>
             </div>
           )}
+
+          <UnifiedQuiz />
+
 
 
         </main>
