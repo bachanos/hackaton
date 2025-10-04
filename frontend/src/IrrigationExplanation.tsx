@@ -29,9 +29,10 @@ interface WateringData {
 
 interface IrrigationExplanationProps {
   wateringData: WateringData;
+  onClose: () => void;
 }
 
-const IrrigationExplanation: React.FC<IrrigationExplanationProps> = ({ wateringData }) => {
+const IrrigationExplanation: React.FC<IrrigationExplanationProps> = ({ wateringData, onClose }) => {
   // Humedad del sustrato hardcodeada por ahora (45% como en el ejemplo)
   const soilMoisture = 45;
 
@@ -56,6 +57,7 @@ const IrrigationExplanation: React.FC<IrrigationExplanationProps> = ({ wateringD
 
   return (
     <div className="irrigation-explanation">
+      <button className="explanation-close-btn" onClick={onClose}>✕</button>
       <div className="explanation-header">
         <h2>🧠 CÓMO CALCULAMOS TU RIEGO HOY</h2>
       </div>

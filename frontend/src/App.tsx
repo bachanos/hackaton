@@ -338,6 +338,11 @@ function App() {
         </div>
 
         <main className="main-content">
+
+         {/* Explicación detallada del cálculo */}
+          {wateringData && showExplanation && (
+            <IrrigationExplanation wateringData={wateringData} onClose={() => setShowExplanation(false)} />
+          )}
           {/* Panel de detección automática */}
           <div className="vision-panel">
             <div className="vision-content">
@@ -430,10 +435,7 @@ function App() {
 
 
 
-          {/* Explicación detallada del cálculo */}
-          {wateringData && showExplanation && (
-            <IrrigationExplanation wateringData={wateringData} />
-          )}
+
 
 
 
