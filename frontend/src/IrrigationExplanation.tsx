@@ -34,7 +34,7 @@ interface IrrigationExplanationProps {
 const IrrigationExplanation: React.FC<IrrigationExplanationProps> = ({ wateringData }) => {
   // Humedad del sustrato hardcodeada por ahora (45% como en el ejemplo)
   const soilMoisture = 45;
-  
+
   // Determinar estado del sustrato
   const getSoilStatus = (moisture: number) => {
     if (moisture < 30) return { status: 'SECO', color: '#ff6b6b', emoji: '🔴' };
@@ -111,8 +111,8 @@ const IrrigationExplanation: React.FC<IrrigationExplanationProps> = ({ wateringD
 
             <div className="moisture-bar-container">
               <div className="moisture-bar">
-                <div 
-                  className="moisture-fill" 
+                <div
+                  className="moisture-fill"
                   style={{ width: `${soilMoisture}%`, backgroundColor: soilStatus.color }}
                 ></div>
                 <div className="moisture-markers">

@@ -557,6 +557,15 @@ body {
   cursor: not-allowed;
 }
 
+/* Contenedor principal compacto */
+.main-result-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Grid original (mantenido para compatibilidad) */
 .results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -614,6 +623,47 @@ body {
   font-size: 0.85rem;
   opacity: 0.8;
   font-style: italic;
+}
+
+/* Datos secundarios compactos */
+.secondary-data {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.data-icon {
+  font-size: 1.2rem;
+}
+
+.data-value {
+  font-weight: bold;
+  color: #00d4ff;
+}
+
+/* Responsive para datos secundarios */
+@media (max-width: 640px) {
+  .secondary-data {
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: center;
+  }
+  
+  .data-item {
+    justify-content: center;
+  }
 }
 
 .number {

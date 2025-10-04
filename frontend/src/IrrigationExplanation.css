@@ -301,15 +301,15 @@
   .calculation-factors {
     flex-direction: column;
   }
-  
+
   .multiply-symbol, .equals-symbol {
     transform: rotate(90deg);
   }
-  
+
   .factor-card {
     min-width: 200px;
   }
-  
+
   .irrigation-explanation {
     padding: 16px;
     margin: 16px;

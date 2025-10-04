@@ -412,9 +412,9 @@ function App() {
 
           </div>
 
-          {/* Resultados principales */}
+          {/* Resultado principal */}
           {wateringData && (
-            <div className="results-grid">
+            <div className="main-result-container">
               <div className="result-card main-result">
                 <h2>💧 Agua Necesaria Hoy</h2>
                 <div className="big-number">{wateringData.requiredMl} ml</div>
@@ -425,20 +425,20 @@ function App() {
                 </div>
               </div>
 
-              <div className="result-card">
-                <h3>🌡️ Temperatura Actual</h3>
-                <div className="number">{wateringData.currentTemp}°C</div>
-              </div>
-
-              <div className="result-card">
-                <h3>💨 Humedad Relativa</h3>
-                <div className="number">{wateringData.currentHumidity}%</div>
-              </div>
-
-              <div className="result-card">
-                <h3>🧮 Evapotranspiración</h3>
-                <div className="number">{wateringData.calculation.etcPlant.toFixed(2)} mm</div>
-                <small>{wateringData.plant.name} (Kc: {wateringData.plant.coefficient})</small>
+              {/* Datos secundarios compactos */}
+              <div className="secondary-data">
+                <div className="data-item">
+                  <span className="data-icon">🌡️</span>
+                  <span className="data-value">{wateringData.currentTemp}°C</span>
+                </div>
+                <div className="data-item">
+                  <span className="data-icon">💨</span>
+                  <span className="data-value">{wateringData.currentHumidity}%</span>
+                </div>
+                <div className="data-item">
+                  <span className="data-icon">🧮</span>
+                  <span className="data-value">{wateringData.calculation.etcPlant.toFixed(2)} mm</span>
+                </div>
               </div>
             </div>
           )}
