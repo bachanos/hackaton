@@ -112,12 +112,12 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage }) => {
   // Renderizar pregunta tipo imagen con respuestas texto
   const renderImageWithText = (question: UnifiedQuestion) => {
     const answers = question.answers as string[];
-    
+
     // Usar imagen capturada para la primera pregunta si está disponible
-    const imageToShow = question.id === 1 && capturedImage 
-      ? capturedImage 
+    const imageToShow = question.id === 1 && capturedImage
+      ? capturedImage
       : question.questionImageUrl;
-    
+
     // Modificar la pregunta si usamos la imagen capturada
     const questionText = question.id === 1 && capturedImage
       ? '¿Qué tipo de planta es la que aparece en esta imagen que acabas de capturar?'
@@ -138,11 +138,11 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage }) => {
               const answersToShow = question.id === 1 && capturedImage
                 ? ['Menta', 'Romero', 'Lavanda', 'Albahaca']
                 : answers;
-              
+
               const correctAnswerIndex = question.id === 1 && capturedImage
                 ? 0 // Menta por defecto, o podríamos usar lastDetection
                 : question.correctAnswer;
-              
+
               return answersToShow.map((answer: string, index: number) => {
                 let buttonClass = 'image-quiz-answer-btn';
                 if (selectedAnswer !== null) {
@@ -152,7 +152,7 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage }) => {
                     buttonClass += ' incorrect';
                   }
                 }
-                
+
                 return (
                   <button
                     key={index}

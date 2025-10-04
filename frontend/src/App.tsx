@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import UnifiedQuiz from './UnifiedQuiz';
+import IrrigationExplanation from './IrrigationExplanation';
 
 interface WateringData {
   requiredMl: number;
@@ -39,7 +40,7 @@ function App() {
   const [wateringData, setWateringData] = useState<WateringData | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState('menta');
-  
+
   // Coordenadas fijas para EINA
   const coordinates = { lat: 41.6836, lon: -0.8881 };
   const [visionLoading, setVisionLoading] = useState(false);
@@ -440,6 +441,11 @@ function App() {
                 <small>{wateringData.plant.name} (Kc: {wateringData.plant.coefficient})</small>
               </div>
             </div>
+          )}
+
+          {/* Explicación detallada del cálculo */}
+          {wateringData && (
+            <IrrigationExplanation wateringData={wateringData} />
           )}
 
           <UnifiedQuiz capturedImage={capturedImage} />

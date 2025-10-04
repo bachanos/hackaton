@@ -1,0 +1,317 @@
+.irrigation-explanation {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  border: 2px solid #4ecdc4;
+  padding: 24px;
+  margin: 24px 0;
+  color: white;
+  font-family: 'Courier New', monospace;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.explanation-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #4ecdc4;
+}
+
+.explanation-header h2 {
+  margin: 0;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #4ecdc4;
+}
+
+.calculation-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Factores de cálculo */
+.calculation-factors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.factor-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.factor-card.climate {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.factor-card.plant {
+  border-color: #4ecdc4;
+  background: rgba(78, 205, 196, 0.1);
+}
+
+.factor-card.pot {
+  border-color: #45b7d1;
+  background: rgba(69, 183, 209, 0.1);
+}
+
+.factor-icon {
+  font-size: 1.5em;
+  margin-bottom: 4px;
+}
+
+.factor-title {
+  font-size: 0.8em;
+  font-weight: bold;
+  color: #ccc;
+}
+
+.factor-value {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: white;
+}
+
+.factor-unit {
+  font-size: 0.9em;
+  color: #aaa;
+}
+
+.multiply-symbol, .equals-symbol {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #4ecdc4;
+  padding: 0 8px;
+}
+
+/* Demanda teórica */
+.theoretical-demand {
+  text-align: center;
+  padding: 16px;
+}
+
+.demand-arrow {
+  font-size: 0.9em;
+  color: #4ecdc4;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.demand-value {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
+}
+
+/* Panel de estado del sustrato */
+.soil-status-panel {
+  border: 2px solid #4ecdc4;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.panel-header {
+  background: #4ecdc4;
+  color: black;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.panel-content {
+  padding: 20px;
+}
+
+.sensor-reading {
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Barra de humedad */
+.moisture-bar-container {
+  margin: 20px 0;
+}
+
+.moisture-bar {
+  position: relative;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.moisture-fill {
+  height: 100%;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.moisture-markers {
+  position: absolute;
+  top: -25px;
+  left: 0;
+  right: 0;
+  height: 20px;
+}
+
+.marker {
+  position: absolute;
+  font-size: 0.8em;
+  color: #ccc;
+  transform: translateX(-50%);
+}
+
+.moisture-labels {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  right: 0;
+  height: 20px;
+}
+
+.label {
+  position: absolute;
+  font-size: 0.7em;
+  font-weight: bold;
+  color: #aaa;
+  transform: translateX(-50%);
+}
+
+.soil-conclusion {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.soil-state, .water-decision {
+  font-size: 1em;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.soil-state {
+  background: rgba(78, 205, 196, 0.2);
+}
+
+.water-decision {
+  background: rgba(255, 107, 107, 0.2);
+}
+
+/* Lluvia prevista */
+.rain-forecast {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.rain-header {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 12px;
+  color: #45b7d1;
+  border-bottom: 1px solid rgba(69, 183, 209, 0.3);
+  padding-bottom: 8px;
+}
+
+.rain-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rain-info {
+  font-size: 1em;
+}
+
+.rain-adjustment {
+  font-size: 0.9em;
+  color: #4ecdc4;
+  font-style: italic;
+}
+
+/* Decisión final */
+.final-decision {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border: 1px solid #4ecdc4;
+}
+
+.decision-arrow {
+  font-size: 1em;
+  color: #4ecdc4;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+.decision-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.decision-action {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.decision-action.water {
+  background: rgba(255, 107, 107, 0.3);
+  border: 2px solid #ff6b6b;
+  color: #ff6b6b;
+}
+
+.decision-action.no-water {
+  background: rgba(108, 117, 125, 0.3);
+  border: 2px solid #6c757d;
+  color: #6c757d;
+}
+
+.decision-note {
+  font-size: 1em;
+  color: #ccc;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .calculation-factors {
+    flex-direction: column;
+  }
+  
+  .multiply-symbol, .equals-symbol {
+    transform: rotate(90deg);
+  }
+  
+  .factor-card {
+    min-width: 200px;
+  }
+  
+  .irrigation-explanation {
+    padding: 16px;
+    margin: 16px;
+  }
+}
