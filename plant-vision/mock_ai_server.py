@@ -84,6 +84,7 @@ def get_humidity():
 
         # Leer respuesta del Arduino
         response_line = arduino.readline().decode('utf-8').strip()
+        print("Respuesta Arduino:", response_line)
         arduino.close()
 
         # Parsear "Humidity: 45.2%" -> extraer 45.2
@@ -108,6 +109,40 @@ def get_humidity():
         print(f"❌ Error en lectura de humedad: {e}")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/irrigate', methods=['GET'])
+def irrigate():
+    """Endpoint que envía comando de riego 'R' al Arduino"""
+    import serial
+
+    try:
+        # Conectar al Arduino
+        arduino = serial.Serial(port='/dev/cu.usbserial-110', baudrate=9600, timeout=2)
+        time.sleep(0.5)  # Esperar conexión
+
+        # Enviar comando de riego
+        arduino.write(b'1')
+
+        # Leer respuesta del Arduino (si la hay)
+        response_line = ""
+        if arduino.in_waiting > 0:
+            response_line = arduino.readline().decode('utf-8').strip()
+
+        arduino.close()
+
+        response = {
+            "command": "irrigate",
+            "status": "sent",
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "arduino_response": response_line if response_line else "No response"
+        }
+
+        print(f"💦 Comando riego enviado al Arduino (respuesta: {response_line})")
+        return jsonify(response)
+
+    except Exception as e:
+        print(f"❌ Error enviando comando de riego: {e}")
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/toggle-plant', methods=['POST'])
 def toggle_plant():
     """
@@ -130,7 +165,8 @@ if __name__ == '__main__':
     print("📡 Endpoints disponibles:")
     print("   POST /classify - Clasificar planta (siempre devuelve romero)")
     print("   GET /health - Estado del servicio")
-    print("   GET /humidity - Obtener humedad simulada")
+    print("   GET /humidity - Obtener humedad del Arduino")
+    print("   POST /irrigate - Enviar comando riego 'R' al Arduino")
     print("   POST /toggle-plant - Cambiar planta manualmente")
     print("🚀 Servidor corriendo en http://localhost:5001")
 
