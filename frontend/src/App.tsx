@@ -133,11 +133,6 @@ function App() {
 
     setCapturedImage(imageData);
 
-    // Generar timestamp y descargar automáticamente
-    const timestamp = generateTimestamp();
-    downloadImage(imageData, timestamp);
-    console.log(`📸 Imagen guardada: plant_detection_${timestamp}.png`);
-
     try {
       // Usar nuestro backend con formato correcto
       console.log('� Enviando a nuestro backend...');
@@ -235,30 +230,9 @@ function App() {
     }
   };
 
-  // Función para generar timestamp human-friendly
-  const generateTimestamp = (): string => {
-    const now = new Date();
-    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
-    const dayName = days[now.getDay()];
-    const day = now.getDate();
-    const month = months[now.getMonth()];
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
 
-    return `${dayName}-${day}-${month}-${hours}${minutes}`;
-  };
 
-  // Función para descargar imagen automáticamente
-  const downloadImage = (imageData: string, timestamp: string) => {
-    const link = document.createElement('a');
-    link.download = `plant_detection_${timestamp}.png`;
-    link.href = imageData;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   // Función para capturar imagen de la webcam
   const captureImage = (): string | null => {

@@ -66,7 +66,7 @@ const UnifiedQuiz: React.FC = () => {
   // Renderizar pregunta tipo texto con respuestas imagen
   const renderTextWithImages = (question: UnifiedQuestion) => {
     const answers = question.answers as Answer[];
-    
+
     return (
       <>
         <div className="question-container">
@@ -82,7 +82,7 @@ const UnifiedQuiz: React.FC = () => {
                 cardClass += ' incorrect';
               }
             }
-            
+
             return (
               <div
                 key={answer.id}
@@ -102,7 +102,7 @@ const UnifiedQuiz: React.FC = () => {
   // Renderizar pregunta tipo imagen con respuestas texto
   const renderImageWithText = (question: UnifiedQuestion) => {
     const answers = question.answers as string[];
-    
+
     return (
       <>
         <div className="question-container">
@@ -144,8 +144,8 @@ const UnifiedQuiz: React.FC = () => {
       {/* Barra de progreso */}
       <div className="progress-container">
         <div className="progress-bar-background">
-          <div 
-            className="progress-bar-foreground" 
+          <div
+            className="progress-bar-foreground"
             style={{ width: `${progressPercentage}%` }}
           ></div>
         </div>
@@ -155,7 +155,7 @@ const UnifiedQuiz: React.FC = () => {
       </div>
 
       {/* Contenido de la pregunta según su tipo */}
-      {currentQuestion.type === 'text-with-images' 
+      {currentQuestion.type === 'text-with-images'
         ? renderTextWithImages(currentQuestion)
         : renderImageWithText(currentQuestion)
       }

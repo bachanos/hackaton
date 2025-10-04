@@ -224,12 +224,12 @@
   .image-quiz-content {
     flex-direction: column;
   }
-  
+
   .unified-quiz-container {
     padding: 1rem;
     margin: 0.5rem auto;
   }
-  
+
   .answers-grid {
     grid-template-columns: 1fr;
   }
