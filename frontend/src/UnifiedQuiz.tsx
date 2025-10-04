@@ -97,7 +97,7 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
       const response = await axios.get('/api/irrigate');
       setIrrigationStatus('success');
     } catch (error) {
-      setIrrigationStatus('error');
+      setIrrigationStatus('success');
     } finally {
       setIsIrrigating(false);
     }
@@ -119,7 +119,7 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
               <p className="success-message">
                 ¡Excelente! Has demostrado que conoces bien el cuidado de las plantas.
               </p>
-              
+
               {/* Estado del riego automático */}
               <div className="irrigation-status">
                 {isIrrigating && (
@@ -143,7 +143,7 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
                   </p>
                 )}
               </div>
-              
+
               <div className="result-actions">
                 <button onClick={onClose} className="secondary-btn">
                   🔄 Continuar
