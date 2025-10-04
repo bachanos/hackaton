@@ -38,6 +38,21 @@ interface ApodData {
   date: string;
 }
 
+interface TemperatureDataPoint {
+  time: string;
+  temperature: number;
+  humidity: number;
+}
+
+interface TemperatureAlert {
+  location: { lat: number; lon: number };
+  alert: {
+    isAlert: boolean;
+    message: string;
+  };
+  data: TemperatureDataPoint[];
+}
+
 interface Plant {
   id: string;
   name: string;
@@ -64,14 +79,25 @@ function App() {
   const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [temperatureAlert, setTemperatureAlert] = useState<TemperatureAlert | null>(null);
 
-  // Cargar imagen NASA APOD y plantas al inicio
+  // Cargar datos iniciales
   useEffect(() => {
     fetchApod();
     fetchPlants();
     checkVisionStatus();
     enumerateCameras();
+    fetchTemperatureAlert();
   }, []);
+
+  const fetchTemperatureAlert = async () => {
+    try {
+      const response = await axios.get('/api/temperature-alert');
+      setTemperatureAlert(response.data);
+    } catch (error) {
+      console.error('Error fetching temperature alert:', error);
+    }
+  };
 
   const fetchApod = async () => {
     try {
@@ -335,6 +361,23 @@ function App() {
           <h1>🌱 Sistema de Riego Automatizado</h1>
           <p>Con tecnología de APIs de la NASA y datos meteorológicos en tiempo real</p>
         </header>
+
+        {temperatureAlert && (
+          <div style={{
+            backgroundColor: 'rgba(26, 32, 44, 0.8)',
+            color: 'white',
+            padding: '1rem',
+            margin: '1rem auto',
+            borderRadius: '8px',
+            maxWidth: '900px',
+            border: temperatureAlert.alert.isAlert ? '2px solid #f56565' : '2px solid #48bb78'
+          }}>
+            <h3>🛰️ Datos de Alerta de Temperatura (NASA):</h3>
+            <pre style={{ whiteSpace: 'pre-wrap', textAlign: 'left', fontSize: '0.9rem' }}>
+              {JSON.stringify(temperatureAlert, null, 2)}
+            </pre>
+          </div>
+        )}
 
         <Quiz />
 

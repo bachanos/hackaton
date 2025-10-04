@@ -17,7 +17,9 @@ export const getTemperatureData = async (lat: number, lon: number) => {
   const startDate = new Date();
   startDate.setDate(endDate.getDate() - 7);
 
-  const apiUrl = `https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M&community=AG&longitude=${lon}&latitude=${lat}&start=${formatDateForNasaApi(startDate)}&end=${formatDateForNasaApi(endDate)}&format=JSON`;
+  const apiUrl = `https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M&community=AG&longitude=${lon}&latitude=${lat}&start=${formatDateForNasaApi(
+    startDate
+  )}&end=${formatDateForNasaApi(endDate)}&format=JSON`;
 
   try {
     console.log(`🛰️  Consultando NASA POWER API: ${apiUrl}`);
@@ -34,7 +36,10 @@ export const getTemperatureData = async (lat: number, lon: number) => {
     const temperatures = data.properties.parameter.T2M;
     const result = Object.keys(temperatures).map(dateStr => {
       // Formatear la fecha de YYYYMMDD a YYYY-MM-DD
-      const formattedDate = `${dateStr.substring(0, 4)}-${dateStr.substring(4, 6)}-${dateStr.substring(6, 8)}`;
+      const formattedDate = `${dateStr.substring(0, 4)}-${dateStr.substring(
+        4,
+        6
+      )}-${dateStr.substring(6, 8)}`;
       return {
         date: formattedDate,
         temp_avg: temperatures[dateStr],
@@ -42,7 +47,6 @@ export const getTemperatureData = async (lat: number, lon: number) => {
     });
 
     return result;
-
   } catch (error) {
     console.error('❌ Fallo al contactar con la NASA POWER API:', error);
     throw error;

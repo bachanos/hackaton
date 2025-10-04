@@ -425,7 +425,9 @@ app.get('/api/temperature-alert', async (req, res) => {
     const temperatureData = await getTemperatureData(lat, lon);
 
     // Lógica simple de alerta: si algún día la temperatura media fue < 5°C
-    const isColdAlert = temperatureData.some((day: { temp_avg: number }) => day.temp_avg < 5);
+    const isColdAlert = temperatureData.some(
+      (day: { temp_avg: number }) => day.temp_avg < 5
+    );
     const message = isColdAlert
       ? '¡Alerta! Se han registrado temperaturas muy frías en los últimos 7 días.'
       : 'Las temperaturas han sido moderadas en los últimos 7 días.';
@@ -440,7 +442,11 @@ app.get('/api/temperature-alert', async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Error al generar la alerta de temperatura:', error);
-    res.status(500).json({ error: 'No se pudieron obtener los datos de temperatura de la NASA.' });
+    res
+      .status(500)
+      .json({
+        error: 'No se pudieron obtener los datos de temperatura de la NASA.',
+      });
   }
 });
 
