@@ -397,26 +397,22 @@ const mentaQuestions: UnifiedQuestion[] = [
       {
         id: 1,
         text: 'Imagen A: Muestra una menta sana, verde y erguida',
-        imageUrl:
-          'https://images.unsplash.com/photo-1628626617617-6ba8c9b5dc12?w=400&h=300&fit=crop',
+        imageUrl: '/images/mentaOk1.jpeg',
       },
       {
         id: 2,
         text: 'Imagen B: Muestra una menta mustia, con las hojas caídas y la tierra seca',
-        imageUrl:
-          'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
+        imageUrl: '/images/mentaBad.jpeg',
       },
       {
         id: 3,
         text: 'Imagen C: Muestra una menta con posibles signos de deficiencia nutricional o manchas',
-        imageUrl:
-          'https://images.unsplash.com/photo-1566281796817-e5b18a2e75b1?w=400&h=300&fit=crop',
+        imageUrl: '/images/mentaOk3.jpeg',
       },
       {
         id: 4,
         text: 'Imagen D: Muestra una variedad de menta de color más oscuro, pero con aspecto saludable',
-        imageUrl:
-          'https://images.unsplash.com/photo-1516740154405-0adb7163e8d8?w=400&h=300&fit=crop',
+        imageUrl: '/images/mentaOk2.jpeg',
       },
     ],
     correctAnswerId: 2,
