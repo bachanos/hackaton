@@ -118,7 +118,7 @@ body {
     text-align: center;
     padding: 1rem;
   }
-  
+
   .top-info-bar .weather-data {
     gap: 1.5rem;
   }
@@ -129,7 +129,7 @@ body {
     flex-direction: column;
     gap: 0.8rem;
   }
-  
+
   .top-info-bar .data-item {
     justify-content: center;
   }
@@ -200,7 +200,7 @@ body {
     padding: 1rem;
     margin: 1rem;
   }
-  
+
   .camera-settings-panel .camera-dropdown {
     min-width: 200px;
   }
@@ -212,35 +212,35 @@ body {
     flex-direction: column;
     gap: 1.5rem;
   }
-  
+
   .camera-column {
     flex: none; /* Quitar ancho fijo en móvil */
   }
-  
+
   .camera-view {
     height: 250px;
   }
-  
+
   .info-placeholder {
     min-height: 200px;
     padding: 1.5rem;
   }
-  
+
   .placeholder-icon {
     font-size: 2rem;
   }
-  
+
   .camera-controls {
     gap: 0.3rem;
   }
-  
+
   .camera-controls .vision-btn {
     padding: 0.35rem 0.6rem;
     font-size: 0.75rem;
     min-width: 70px;
     max-width: 100px;
   }
-  
+
   .cta-calculation {
     padding: 0.6rem 1rem;
     font-size: 0.8rem;
@@ -258,7 +258,7 @@ body {
     padding: 1.5rem;
     margin: 1rem;
   }
-  
+
   .quiz-close-btn {
     width: 35px;
     height: 35px;
@@ -268,12 +268,12 @@ body {
   .camera-view {
     height: 200px;
   }
-  
+
   .info-placeholder {
     min-height: 150px;
     padding: 1rem;
   }
-  
+
   .vision-layout {
     gap: 1rem;
   }
@@ -1145,7 +1145,7 @@ body {
     gap: 1rem;
     text-align: center;
   }
-  
+
   .weather-data {
     gap: 1.5rem;
   }
@@ -1156,7 +1156,7 @@ body {
     flex-direction: column;
     gap: 0.8rem;
   }
-  
+
   .data-item {
     justify-content: center;
   }

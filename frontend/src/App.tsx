@@ -291,7 +291,7 @@ function App() {
                 <span className="location-coords">{coordinates.lat.toFixed(2)}°N {Math.abs(coordinates.lon).toFixed(2)}°O</span>
               </div>
             </div>
-            
+
             <div className="weather-data">
               <div className="data-item">
                 <span className="data-icon">🌡️</span>
@@ -370,7 +370,7 @@ function App() {
 
                     {/* Botón para volver a la webcam si hay imagen capturada */}
                     {capturedImage && (
-                      <button 
+                      <button
                         className="vision-btn back-to-webcam"
                         onClick={() => setCapturedImage(null)}
                       >
@@ -407,7 +407,7 @@ function App() {
                       <div className="plant-summary">
                         <span className="plant-desc-small">{wateringData.plant.description}</span>
                       </div>
-                      <button 
+                      <button
                         className="cta-calculation"
                         onClick={() => {
                           const explanationSection = document.querySelector('.irrigation-explanation');
@@ -461,13 +461,13 @@ function App() {
           {isQuizModalOpen && (
             <div className="quiz-modal-overlay" onClick={() => setIsQuizModalOpen(false)}>
               <div className="quiz-modal-content" onClick={(e) => e.stopPropagation()}>
-                <button 
+                <button
                   className="quiz-close-btn"
                   onClick={() => setIsQuizModalOpen(false)}
                 >
                   ✕
                 </button>
-                <UnifiedQuiz capturedImage={capturedImage} />
+                <UnifiedQuiz capturedImage={capturedImage} detectedPlant={selectedPlant} />
               </div>
             </div>
           )}

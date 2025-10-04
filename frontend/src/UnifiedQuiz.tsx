@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { unifiedQuizQuestions, UnifiedQuestion, Answer } from './quizData';
 import './UnifiedQuiz.css';
 
 interface UnifiedQuizProps {
   capturedImage?: string | null;
+  detectedPlant?: string;
 }
 
-const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage }) => {
+const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [showResult, setShowResult] = useState(false);
+
+  // Reiniciar el quiz cada vez que se abre (cuando capturedImage cambia)
+  useEffect(() => {
+    setCurrentQuestionIndex(0);
+    setSelectedAnswer(null);
+    setCorrectAnswers(0);
+    setShowResult(false);
+  }, [capturedImage]);
 
   const currentQuestion = unifiedQuizQuestions[currentQuestionIndex];
   const totalQuestions = unifiedQuizQuestions.length;
@@ -28,9 +37,12 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage }) => {
       isCorrect = answers[answerIndex].id === currentQuestion.correctAnswerId;
     } else {
       // Para imagen con texto - verificar si usamos imagen capturada
-      if (currentQuestion.id === 1 && capturedImage) {
-        // Para imagen capturada: 0=Menta (correcto), 1=Romero, 2=Lavanda, 3=Albahaca
-        isCorrect = answerIndex === 0; // Menta es la respuesta correcta por defecto
+      if (currentQuestion.id === 1 && capturedImage && detectedPlant) {
+        // Determinar el índice correcto basado en la planta detectada
+        const plantOptions = ['Menta', 'Romero', 'Lavanda', 'Albahaca'];
+        const detectedPlantCapitalized = detectedPlant.charAt(0).toUpperCase() + detectedPlant.slice(1);
+        const correctIndex = plantOptions.findIndex(plant => plant === detectedPlantCapitalized);
+        isCorrect = answerIndex === (correctIndex !== -1 ? correctIndex : 0);
       } else {
         isCorrect = answerIndex === currentQuestion.correctAnswer;
       }
@@ -139,8 +151,13 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage }) => {
                 ? ['Menta', 'Romero', 'Lavanda', 'Albahaca']
                 : answers;
 
-              const correctAnswerIndex = question.id === 1 && capturedImage
-                ? 0 // Menta por defecto, o podríamos usar lastDetection
+              const correctAnswerIndex = question.id === 1 && capturedImage && detectedPlant
+                ? (() => {
+                    const plantOptions = ['Menta', 'Romero', 'Lavanda', 'Albahaca'];
+                    const detectedPlantCapitalized = detectedPlant.charAt(0).toUpperCase() + detectedPlant.slice(1);
+                    const correctIndex = plantOptions.findIndex(plant => plant === detectedPlantCapitalized);
+                    return correctIndex !== -1 ? correctIndex : 0;
+                  })()
                 : question.correctAnswer;
 
               return answersToShow.map((answer: string, index: number) => {
@@ -201,7 +218,15 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage }) => {
               const answers = currentQuestion.answers as Answer[];
               isCorrect = answers[selectedAnswer].id === currentQuestion.correctAnswerId;
             } else {
-              isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+              // Para imagen con texto - verificar si usamos imagen capturada
+              if (currentQuestion.id === 1 && capturedImage && detectedPlant) {
+                const plantOptions = ['Menta', 'Romero', 'Lavanda', 'Albahaca'];
+                const detectedPlantCapitalized = detectedPlant.charAt(0).toUpperCase() + detectedPlant.slice(1);
+                const correctIndex = plantOptions.findIndex(plant => plant === detectedPlantCapitalized);
+                isCorrect = selectedAnswer === (correctIndex !== -1 ? correctIndex : 0);
+              } else {
+                isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+              }
             }
             return isCorrect ? '¡Correcto! ✅' : 'Incorrecto. ❌';
           })()}
