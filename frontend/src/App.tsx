@@ -45,7 +45,7 @@ const mapDetectedPlantToQuizFormat = (detectedPlant: string): string => {
     'romero': 'romero',
     'rosemary': 'romero'
   };
-  
+
   const mapped = plantMapping[detectedPlant.toLowerCase()] || 'romero';
   console.log(`🔄 Mapeo de planta: "${detectedPlant}" → "${mapped}"`);
   return mapped;
@@ -331,6 +331,24 @@ function App() {
               <div className="vision-layout-centered">
                 {/* Cámara centrada */}
                 <div className="camera-column-centered">
+                  {/* Controles de cámara encima del cuadro */}
+                  <div className="camera-controls">
+                    <button
+                      className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
+                      onClick={webcamActive ? stopWebcam : startWebcam}
+                    >
+                      {webcamActive ? '⏹️ Parar Cámara' : '▶️ Iniciar Cámara'}
+                    </button>
+
+                    <button
+                      className="vision-btn detect"
+                      onClick={detectPlantWithCamera}
+                      disabled={visionLoading || !webcamActive}
+                    >
+                      {visionLoading ? '🔍 Detectando...' : '📸 Detectar Planta'}
+                    </button>
+                  </div>
+
                   <div className="unified-camera-container">
                     {/* Mostrar imagen capturada si existe, sino mostrar webcam */}
                     {capturedImage ? (
@@ -366,49 +384,11 @@ function App() {
                     )}
                   </div>
 
-                  {/* Controles de cámara debajo del cuadro */}
-                  <div className="camera-controls">
-                    <button
-                      className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
-                      onClick={webcamActive ? stopWebcam : startWebcam}
-                    >
-                      {webcamActive ? '⏹️ Parar Cámara' : '▶️ Iniciar Cámara'}
-                    </button>
-
-                    <button
-                      className="vision-btn detect"
-                      onClick={detectPlantWithCamera}
-                      disabled={visionLoading || !webcamActive}
-                    >
-                      {visionLoading ? '🔍 Detectando...' : '📸 Detectar Planta'}
-                    </button>
-
-                    {/* Botón para volver a la webcam si hay imagen capturada */}
-                    {capturedImage && (
-                      <button
-                        className="vision-btn back-to-webcam"
-                        onClick={() => setCapturedImage(null)}
-                      >
-                        🔄 Volver a cámara en vivo
-                      </button>
-                    )}
-                  </div>
-
                   {/* Estado de la cámara */}
                   <div className="camera-status">
                     <span className={`status-indicator ${webcamActive ? 'connected' : 'disconnected'}`}>
                       {webcamActive ? '🟢 Cámara activa' : '🔴 Cámara inactiva'}
                     </span>
-                    {lastDetection && (
-                      <div className="last-detection">
-                        <span className="detection-result">
-                          Última detección: {lastDetection.plant} ({(lastDetection.confidence * 100).toFixed(1)}%)
-                        </span>
-                        <span className="detection-time">
-                          {new Date(lastDetection.timestamp).toLocaleTimeString()}
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -454,9 +434,9 @@ function App() {
                 >
                   ✕
                 </button>
-                <UnifiedQuiz 
-                  capturedImage={capturedImage} 
-                  detectedPlant={mapDetectedPlantToQuizFormat(lastDetection.plant)} 
+                <UnifiedQuiz
+                  capturedImage={capturedImage}
+                  detectedPlant={mapDetectedPlantToQuizFormat(lastDetection.plant)}
                   onClose={() => setIsQuizModalOpen(false)}
                 />
               </div>

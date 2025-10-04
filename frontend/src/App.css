@@ -231,14 +231,15 @@ body {
   }
 
   .camera-controls {
-    gap: 0.3rem;
+    gap: 0.5rem;
+    flex-wrap: nowrap; /* Mantener horizontal incluso en móvil */
   }
 
   .camera-controls .vision-btn {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.75rem;
-    min-width: 70px;
-    max-width: 100px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    min-width: 90px;
+    max-width: 120px;
   }
 
   .cta-calculation {
@@ -630,7 +631,7 @@ body {
 }
 
 .camera-column-centered {
-  width: 320px; /* Menos ancho que los 400px originales */
+  width: 400px; /* Ancho aumentado para mejor visualización */
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -643,21 +644,23 @@ body {
   justify-content: center;
 }
 
-/* Controles de cámara encima del cuadro - compactos */
+/* Controles de cámara encima del cuadro - horizontales y más grandes */
 .camera-controls {
   display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
+  gap: 0.8rem;
+  flex-wrap: nowrap; /* No permitir que se envuelvan a la siguiente línea */
   justify-content: center;
+  align-items: center;
 }
 
 .camera-controls .vision-btn {
-  padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
-  min-width: 80px;
-  max-width: 120px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.9rem;
+  min-width: 120px;
+  max-width: 160px;
   flex: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  white-space: nowrap; /* Evitar que el texto se divida */
 }
 
 .camera-controls .vision-btn.back-to-webcam {
