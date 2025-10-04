@@ -30,13 +30,7 @@ interface WateringData {
   };
 }
 
-interface ApodData {
-  title: string;
-  explanation: string;
-  url: string;
-  mediaType: string;
-  date: string;
-}
+
 
 
 
@@ -50,7 +44,6 @@ interface Plant {
 
 function App() {
   const [wateringData, setWateringData] = useState<WateringData | null>(null);
-  const [apodData, setApodData] = useState<ApodData | null>(null);
   const [loading, setLoading] = useState(false);
   const [coordinates, setCoordinates] = useState({ lat: 41.6836, lon: -0.8881 });
   const [selectedPlant, setSelectedPlant] = useState('menta');
@@ -69,7 +62,6 @@ function App() {
 
   // Cargar datos iniciales
   useEffect(() => {
-    fetchApod();
     fetchPlants();
     checkVisionStatus();
     enumerateCameras();
@@ -77,14 +69,7 @@ function App() {
 
 
 
-  const fetchApod = async () => {
-    try {
-      const response = await axios.get('/api/apod');
-      setApodData(response.data);
-    } catch (error) {
-      console.error('Error fetching NASA APOD:', error);
-    }
-  };
+
 
   const fetchPlants = async () => {
     try {
@@ -328,12 +313,7 @@ function App() {
   })) || [];
 
   return (
-    <div className="app" style={{
-      backgroundImage: apodData?.mediaType === 'image' ? `url(${apodData.url})` : 'none',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
-    }}>
+    <div className="app">
       <div className="overlay">
         <header className="header">
           <h1>🌱 Sistema de Riego Automatizado</h1>
@@ -609,30 +589,11 @@ function App() {
             </div>
           )}
 
-          {/* Panel NASA APOD */}
-          {apodData && (
-            <div className="apod-panel">
-              <h3>🚀 NASA - Imagen Astronómica del Día</h3>
-              <div className="apod-content">
-                <h4>{apodData.title}</h4>
-                <p className="apod-date">📅 {apodData.date}</p>
-                {apodData.mediaType === 'image' && (
-                  <img
-                    src={apodData.url}
-                    alt={apodData.title}
-                    className="apod-thumbnail"
-                  />
-                )}
-                <p className="apod-explanation">
-                  {apodData.explanation.substring(0, 200)}...
-                </p>
-              </div>
-            </div>
-          )}
+
         </main>
 
         <footer className="footer">
-          <p>🛰️ Datos meteorológicos: Open-Meteo | 🚀 Imágenes: NASA APOD API</p>
+          <p>🛰️ Datos meteorológicos: Open-Meteo</p>
         </footer>
       </div>
     </div>
