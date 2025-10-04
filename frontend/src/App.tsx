@@ -287,7 +287,10 @@ function App() {
     };
   }, [webcamStream]);
 
-
+  const handleCloseQuiz = () => {
+    setIsQuizModalOpen(false);
+    setShowExplanation(true);
+  };
 
   return (
     <div className="app">
@@ -436,21 +439,18 @@ function App() {
 
           {/* Modal del Quiz */}
           {isQuizModalOpen && (
-            <div className="quiz-modal-overlay" onClick={() => setIsQuizModalOpen(false)}>
+            <div className="quiz-modal-overlay" onClick={handleCloseQuiz}>
               <div className="quiz-modal-content" onClick={(e) => e.stopPropagation()}>
                 <button
                   className="quiz-close-btn"
-                  onClick={() => setIsQuizModalOpen(false)}
+                  onClick={handleCloseQuiz}
                 >
                   ✕
                 </button>
                 <UnifiedQuiz
                   capturedImage={capturedImage}
                   detectedPlant={mapDetectedPlantToQuizFormat(lastDetection.plant)}
-                  onClose={() => {
-                    setIsQuizModalOpen(false);
-                    setShowExplanation(true);
-                  }}
+                  onClose={handleCloseQuiz}
                 />
               </div>
             </div>
