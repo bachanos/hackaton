@@ -59,6 +59,7 @@ function App() {
   useEffect(() => {
     checkVisionStatus();
     enumerateCameras();
+    fetchWateringData(); // Cargar datos iniciales para mostrar la barra superior
   }, []);
 
 

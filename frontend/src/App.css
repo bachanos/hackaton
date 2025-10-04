@@ -603,7 +603,7 @@ body {
 .info-column {
   flex: 1; /* Toma el espacio restante */
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Alinear al inicio para coincidir con la cámara */
   justify-content: center;
 }
 
@@ -665,7 +665,7 @@ body {
 .unified-camera-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch; /* Para que ocupe todo el ancho disponible */
   gap: 1rem;
 }
 
@@ -711,7 +711,10 @@ body {
   margin: 0;
   padding: 1.5rem;
   max-width: none;
-  height: fit-content;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .result-card.main-result.compact .big-number {
