@@ -129,7 +129,7 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
                 )}
                 {irrigationStatus === 'success' && (
                   <p className="irrigation-success">
-                    ✅ ¡Riego automático activado! Tu planta ha sido regada.
+                    ✅ ¡Riego automático activado! Tu planta se está regando.
                   </p>
                 )}
                 {irrigationStatus === 'error' && (
