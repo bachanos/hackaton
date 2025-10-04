@@ -101,9 +101,34 @@ function App() {
       const videoDevices = devices.filter(device => device.kind === 'videoinput');
       setAvailableCameras(videoDevices);
 
-      // Seleccionar primera cámara por defecto si no hay ninguna seleccionada
       if (videoDevices.length > 0 && !selectedCameraId) {
-        setSelectedCameraId(videoDevices[0].deviceId);
+        // Buscar GoPro primero
+        const gopro = videoDevices.find(device => 
+          device.label.toLowerCase().includes('gopro')
+        );
+        
+        if (gopro) {
+          setSelectedCameraId(gopro.deviceId);
+          console.log('📹 GoPro encontrada y seleccionada automáticamente:', gopro.label);
+        } else {
+          // Buscar primera cámara que NO sea la webcam integrada del Mac
+          const externalCamera = videoDevices.find(device => {
+            const label = device.label.toLowerCase();
+            return !label.includes('facetime') && 
+                   !label.includes('built-in') && 
+                   !label.includes('internal') &&
+                   !label.includes('isight');
+          });
+          
+          if (externalCamera) {
+            setSelectedCameraId(externalCamera.deviceId);
+            console.log('📹 Cámara externa encontrada y seleccionada:', externalCamera.label);
+          } else {
+            // Como último recurso, usar la primera disponible
+            setSelectedCameraId(videoDevices[0].deviceId);
+            console.log('📹 Solo webcam integrada disponible, seleccionando:', videoDevices[0].label || 'Cámara sin nombre');
+          }
+        }
       }
 
       console.log('📹 Cámaras disponibles:', videoDevices.map(cam => cam.label || 'Cámara sin nombre'));
