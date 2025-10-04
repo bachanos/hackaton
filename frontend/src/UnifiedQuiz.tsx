@@ -5,9 +5,10 @@ import './UnifiedQuiz.css';
 interface UnifiedQuizProps {
   capturedImage?: string | null;
   detectedPlant?: string;
+  onClose?: () => void;
 }
 
-const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant }) => {
+const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant, onClose }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
@@ -80,15 +81,48 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant 
   };
 
   if (showResult) {
+    const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+    const isPassed = correctAnswers >= Math.ceil(totalQuestions / 2);
+
     return (
       <div className="unified-quiz-container">
         <div className="result-container">
-          <h4>¡Quiz Completado!</h4>
-          <p>
-            Has respondido correctamente {correctAnswers} de {totalQuestions} preguntas
-            ({Math.round((correctAnswers / totalQuestions) * 100)}%).
-          </p>
-          <button onClick={resetQuiz}>Repetir Quiz</button>
+          {isPassed ? (
+            <>
+              <h4>🎉 ¡Quiz Superado!</h4>
+              <p>
+                Has respondido correctamente {correctAnswers} de {totalQuestions} preguntas ({percentage}%).
+              </p>
+              <p className="success-message">
+                ¡Excelente! Has demostrado que conoces bien el cuidado de las plantas.
+                Tu planta será regada automáticamente.
+              </p>
+              <div className="result-actions">
+                <button onClick={onClose} className="secondary-btn">
+                  🔄 Genial!
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h4>📚 Quiz No Completado</h4>
+              <p>
+                Has respondido correctamente {correctAnswers} de {totalQuestions} preguntas ({percentage}%).
+              </p>
+              <p className="improvement-message">
+                Necesitas al menos {Math.ceil(totalQuestions / 2)} respuestas correctas para activar el riego automático.
+                Te recomendamos repasar los conceptos y volver a intentarlo, o activar el riego manual.
+              </p>
+              <div className="result-actions">
+                <button className="manual-watering-btn" onClick={onClose}>
+                  💧 Riego Manual
+                </button>
+                <button onClick={resetQuiz} className="retry-btn">
+                  🔄 Intentar de Nuevo
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );

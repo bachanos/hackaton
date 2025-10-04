@@ -482,7 +482,11 @@ function App() {
                 >
                   ✕
                 </button>
-                <UnifiedQuiz capturedImage={capturedImage} detectedPlant={mapDetectedPlantToQuizFormat(lastDetection.plant)} />
+                <UnifiedQuiz 
+                  capturedImage={capturedImage} 
+                  detectedPlant={mapDetectedPlantToQuizFormat(lastDetection.plant)} 
+                  onClose={() => setIsQuizModalOpen(false)}
+                />
               </div>
             </div>
           )}

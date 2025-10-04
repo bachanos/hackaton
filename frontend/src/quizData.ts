@@ -392,7 +392,7 @@ const mentaQuestions: UnifiedQuestion[] = [
     id: 4,
     type: 'text-with-images',
     questionText:
-      'Tienes una pequeña maceta de Menta y quieres asegurarte de que está sana. Observa estas cuatro imágenes de plantas de Menta. La alerta de los satélites de la NASA para tu zona dice que la humedad del suelo es muy baja y que las temperaturas son más altas de lo normal. ¿Cuál de las siguientes imágenes muestra la Menta que probablemente está sufriendo estrés por falta de agua y exceso de calor, y por lo tanto necesita riego urgente y un poco de sombra?',
+      'Los satélites NASA indican humedad baja y altas temperaturas. ¿Cuál de estas mentas necesita riego urgente por estrés hídrico?',
     answers: [
       {
         id: 1,
