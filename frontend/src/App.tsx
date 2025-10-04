@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './App.css';
-import Quiz from './Quiz';
-import ImageQuiz from './ImageQuiz';
+import UnifiedQuiz from './UnifiedQuiz';
 
 interface WateringData {
   requiredMl: number;
@@ -380,8 +379,7 @@ function App() {
           </div>
         )}
 
-        <ImageQuiz />
-        <Quiz />
+        <UnifiedQuiz />
 
         <main className="main-content">
           {/* Panel de configuración */}
