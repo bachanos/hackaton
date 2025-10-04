@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './App.css';
 import UnifiedQuiz from './UnifiedQuiz';
 
@@ -266,12 +265,7 @@ function App() {
     };
   }, [webcamStream]);
 
-  // Preparar datos para el gráfico
-  const chartData = wateringData?.hourlyForecast.temperatures.map((temp, index) => ({
-    hour: new Date(wateringData.hourlyForecast.times[index]).getHours(),
-    temperature: temp,
-    humidity: wateringData.hourlyForecast.humidity[index]
-  })) || [];
+
 
   return (
     <div className="app">
@@ -445,47 +439,6 @@ function App() {
                 <div className="number">{wateringData.calculation.etcPlant.toFixed(2)} mm</div>
                 <small>{wateringData.plant.name} (Kc: {wateringData.plant.coefficient})</small>
               </div>
-            </div>
-          )}
-
-          {/* Gráfico de temperatura */}
-          {wateringData && (
-            <div className="chart-container">
-              <h3>📊 Previsión de Temperatura (24h)</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
-                  <XAxis
-                    dataKey="hour"
-                    stroke="white"
-                    tickFormatter={(hour) => `${hour}:00`}
-                  />
-                  <YAxis stroke="white" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'rgba(0,0,0,0.8)',
-                      border: 'none',
-                      borderRadius: '8px',
-                      color: 'white'
-                    }}
-                    labelFormatter={(hour) => `Hora: ${hour}:00`}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="temperature"
-                    stroke="#ff6b6b"
-                    strokeWidth={3}
-                    name="Temperatura (°C)"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="humidity"
-                    stroke="#4ecdc4"
-                    strokeWidth={2}
-                    name="Humedad (%)"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
             </div>
           )}
 
