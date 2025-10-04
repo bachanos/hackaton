@@ -54,6 +54,7 @@ function App() {
   const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
 
   // Cargar datos iniciales
   useEffect(() => {
@@ -153,6 +154,9 @@ function App() {
           confidence: confidence,
           timestamp: new Date().toISOString()
         });
+
+        // Abrir automáticamente el modal del quiz cuando se detecta una planta
+        setIsQuizModalOpen(true);
 
         // Limpiar error en caso de éxito
         setError(null);
@@ -312,7 +316,42 @@ function App() {
               <div className="vision-layout">
                 {/* Columna izquierda: Cámara */}
                 <div className="camera-column">
-                  {/* Controles de cámara encima del cuadro */}
+                  <div className="unified-camera-container">
+                    {/* Mostrar imagen capturada si existe, sino mostrar webcam */}
+                    {capturedImage ? (
+                      <div className="camera-view">
+                        <img
+                          src={capturedImage}
+                          alt="Imagen capturada"
+                          className="captured-image-display"
+                        />
+                        <div className="camera-label">📸 Imagen capturada</div>
+                      </div>
+                    ) : (
+                      <div className="camera-view">
+                        {webcamActive && webcamStream ? (
+                          <video
+                            ref={(video) => {
+                              if (video && webcamStream) {
+                                video.srcObject = webcamStream;
+                              }
+                            }}
+                            autoPlay
+                            muted
+                            className="webcam-feed"
+                          />
+                        ) : (
+                          <div className="webcam-placeholder">
+                            <div className="camera-icon">📷</div>
+                            <p>Cámara desconectada</p>
+                          </div>
+                        )}
+                        <div className="camera-label">📹 Video en tiempo real</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Controles de cámara debajo del cuadro */}
                   <div className="camera-controls">
                     <button
                       className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
@@ -356,41 +395,6 @@ function App() {
                       </div>
                     )}
                   </div>
-
-                  <div className="unified-camera-container">
-                    {/* Mostrar imagen capturada si existe, sino mostrar webcam */}
-                    {capturedImage ? (
-                      <div className="camera-view">
-                        <img
-                          src={capturedImage}
-                          alt="Imagen capturada"
-                          className="captured-image-display"
-                        />
-                        <div className="camera-label">📸 Imagen capturada</div>
-                      </div>
-                    ) : (
-                      <div className="camera-view">
-                        {webcamActive && webcamStream ? (
-                          <video
-                            ref={(video) => {
-                              if (video && webcamStream) {
-                                video.srcObject = webcamStream;
-                              }
-                            }}
-                            autoPlay
-                            muted
-                            className="webcam-feed"
-                          />
-                        ) : (
-                          <div className="webcam-placeholder">
-                            <div className="camera-icon">📷</div>
-                            <p>Cámara desconectada</p>
-                          </div>
-                        )}
-                        <div className="camera-label">📹 Video en tiempo real</div>
-                      </div>
-                    )}
-                  </div>
                 </div>
 
                 {/* Columna derecha: Información de riego o placeholder */}
@@ -403,6 +407,15 @@ function App() {
                       <div className="plant-summary">
                         <span className="plant-desc-small">{wateringData.plant.description}</span>
                       </div>
+                      <button 
+                        className="cta-calculation"
+                        onClick={() => {
+                          const explanationSection = document.querySelector('.irrigation-explanation');
+                          explanationSection?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                      >
+                        🧠 ¿Cómo se calcula esto?
+                      </button>
                     </div>
                   ) : (
                     <div className="info-placeholder">
@@ -442,7 +455,22 @@ function App() {
             <IrrigationExplanation wateringData={wateringData} />
           )}
 
-          <UnifiedQuiz capturedImage={capturedImage} />
+
+
+          {/* Modal del Quiz */}
+          {isQuizModalOpen && (
+            <div className="quiz-modal-overlay" onClick={() => setIsQuizModalOpen(false)}>
+              <div className="quiz-modal-content" onClick={(e) => e.stopPropagation()}>
+                <button 
+                  className="quiz-close-btn"
+                  onClick={() => setIsQuizModalOpen(false)}
+                >
+                  ✕
+                </button>
+                <UnifiedQuiz capturedImage={capturedImage} />
+              </div>
+            </div>
+          )}
 
           {/* Configuración de cámara */}
           <div className="camera-settings-panel">
