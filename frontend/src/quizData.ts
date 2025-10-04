@@ -113,3 +113,42 @@ export const quizQuestions: Question[] = [
       'El Telescopio Espacial James Webb (JWST) es el sucesor del Hubble, diseñado para ver el universo en infrarrojo y estudiar las primeras galaxias.',
   },
 ];
+
+// Nueva interfaz para quiz con imagen en la pregunta y respuestas en texto
+export interface ImageQuestion {
+  id: number;
+  question: string;
+  imageUrl: string;
+  answers: string[];
+  correctAnswer: number;
+  explanation: string;
+}
+
+export const imageQuizQuestions: ImageQuestion[] = [
+  {
+    id: 1,
+    question: 'Esta imagen del Telescopio Espacial James Webb muestra los "Pilares de la Creación". ¿En qué nebulosa se encuentran?',
+    imageUrl: 'https://stsci-opo.org/STScI-01G8GAB346P5V1P3X32S2BFJ2C.png',
+    answers: [
+      'Nebulosa de Orión',
+      'Nebulosa del Águila',
+      'Nebulosa del Cangrejo',
+      'Nebulosa de la Tarántula'
+    ],
+    correctAnswer: 1,
+    explanation: 'Los Pilares de la Creación son una pequeña región dentro de la vasta Nebulosa del Águila, a unos 6,500 años luz de distancia.'
+  },
+  {
+    id: 2,
+    question: 'La galaxia en esta imagen, conocida como "Rueda de Carro", es un ejemplo de un tipo raro de galaxia. ¿Cuál es?',
+    imageUrl: 'https://stsci-opo.org/STScI-01G695Q1K1J1V4PE19T4V32D4B.png',
+    answers: [
+      'Galaxia espiral',
+      'Galaxia elíptica',
+      'Galaxia lenticular',
+      'Galaxia anular'
+    ],
+    correctAnswer: 3,
+    explanation: 'La Galaxia Rueda de Carro es una galaxia anular, formada por una colisión frontal con otra galaxia más pequeña hace millones de años.'
+  }
+];

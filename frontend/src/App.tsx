@@ -3,6 +3,7 @@ import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './App.css';
 import Quiz from './Quiz';
+import ImageQuiz from './ImageQuiz';
 
 interface WateringData {
   requiredMl: number;
@@ -379,6 +380,7 @@ function App() {
           </div>
         )}
 
+        <ImageQuiz />
         <Quiz />
 
         <main className="main-content">
