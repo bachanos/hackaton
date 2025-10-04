@@ -6,6 +6,7 @@ const Quiz: React.FC = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
 
   const currentQuestion: Question = quizQuestions[currentQuestionIndex];
   const isCorrect = selectedAnswerId === currentQuestion.correctAnswerId;
@@ -14,6 +15,9 @@ const Quiz: React.FC = () => {
     if (showResult) return;
     setSelectedAnswerId(answerId);
     setShowResult(true);
+    if (answerId === currentQuestion.correctAnswerId) {
+      setCorrectAnswersCount((prevCount) => prevCount + 1);
+    }
   };
 
   const handleNextQuestion = () => {
@@ -25,6 +29,17 @@ const Quiz: React.FC = () => {
   return (
     <div className="quiz-container">
       <h2>Quiz Espacial</h2>
+      <div className="progress-container">
+        <div className="progress-bar-background">
+          <div
+            className="progress-bar-foreground"
+            style={{ width: `${(correctAnswersCount / quizQuestions.length) * 100}%` }}
+          ></div>
+        </div>
+        <span className="progress-text">
+          Aciertos: {correctAnswersCount} de {quizQuestions.length}
+        </span>
+      </div>
       <div className="question-container">
         <h3>{currentQuestion.questionText}</h3>
         <div className="answers-grid">

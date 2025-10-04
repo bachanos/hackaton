@@ -10,6 +10,36 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
+.quiz-container h2 {
+  margin-bottom: 1.5rem;
+}
+
+.progress-container {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.progress-bar-background {
+  height: 12px;
+  background-color: #2d3748;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-foreground {
+  height: 100%;
+  background-color: #48bb78; /* Green */
+  border-radius: 6px;
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #a0aec0;
+}
+
 .question-container h3 {
   font-size: 1.8rem;
   font-weight: 600;
