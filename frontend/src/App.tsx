@@ -70,6 +70,7 @@ function App() {
   const [selectedCameraId, setSelectedCameraId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
 
   // Cargar datos iniciales
   useEffect(() => {
@@ -427,7 +428,7 @@ function App() {
 
 
           {/* Explicación detallada del cálculo */}
-          {wateringData && (
+          {wateringData && showExplanation && (
             <IrrigationExplanation wateringData={wateringData} />
           )}
 
@@ -446,7 +447,10 @@ function App() {
                 <UnifiedQuiz
                   capturedImage={capturedImage}
                   detectedPlant={mapDetectedPlantToQuizFormat(lastDetection.plant)}
-                  onClose={() => setIsQuizModalOpen(false)}
+                  onClose={() => {
+                    setIsQuizModalOpen(false);
+                    setShowExplanation(true);
+                  }}
                 />
               </div>
             </div>
