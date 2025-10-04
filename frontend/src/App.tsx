@@ -309,43 +309,49 @@ function App() {
           <div className="vision-panel">
             <h4>📹 Detección Automática con IA</h4>
             <div className="vision-content">
-              <div className="camera-preview-container">
-                <div className="webcam-container">
-                  {webcamActive && webcamStream ? (
-                    <video
-                      ref={(video) => {
-                        if (video && webcamStream) {
-                          video.srcObject = webcamStream;
-                        }
-                      }}
-                      autoPlay
-                      muted
-                      className="webcam-feed"
-                    />
-                  ) : (
-                    <div className="webcam-placeholder">
-                      <div className="camera-icon">📷</div>
-                      <p>Cámara desconectada</p>
-                    </div>
-                  )}
-                  <div className="camera-label">📹 Video en tiempo real</div>
-                </div>
-
-                <div className="captured-image-container">
-                  {capturedImage ? (
+              <div className="unified-camera-container">
+                {/* Mostrar imagen capturada si existe, sino mostrar webcam */}
+                {capturedImage ? (
+                  <div className="camera-view">
                     <img
                       src={capturedImage}
                       alt="Imagen capturada"
-                      className="captured-image"
+                      className="captured-image-display"
                     />
-                  ) : (
-                    <div className="capture-placeholder">
-                      <div className="capture-icon">📸</div>
-                      <p>Imagen capturada aparecerá aquí</p>
-                    </div>
-                  )}
-                  <div className="camera-label">📸 Última captura</div>
-                </div>
+                    <div className="camera-label">📸 Imagen capturada</div>
+                  </div>
+                ) : (
+                  <div className="camera-view">
+                    {webcamActive && webcamStream ? (
+                      <video
+                        ref={(video) => {
+                          if (video && webcamStream) {
+                            video.srcObject = webcamStream;
+                          }
+                        }}
+                        autoPlay
+                        muted
+                        className="webcam-feed"
+                      />
+                    ) : (
+                      <div className="webcam-placeholder">
+                        <div className="camera-icon">📷</div>
+                        <p>Cámara desconectada</p>
+                      </div>
+                    )}
+                    <div className="camera-label">📹 Video en tiempo real</div>
+                  </div>
+                )}
+                
+                {/* Botón para volver a la webcam si hay imagen capturada */}
+                {capturedImage && (
+                  <button 
+                    className="back-to-webcam-btn"
+                    onClick={() => setCapturedImage(null)}
+                  >
+                    🔄 Volver a cámara en vivo
+                  </button>
+                )}
               </div>
 
               <div className="vision-controls">
