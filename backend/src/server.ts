@@ -88,7 +88,6 @@ const setCachedData = (key: string, data: any) => {
 
 // Funciones para servicios de IA
 const callMockService = async (imageData: any) => {
-
   const response = await fetch(AI_CONFIG.mockUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -104,8 +103,6 @@ const callMockService = async (imageData: any) => {
 };
 
 const callRoboflowService = async (imageData: any) => {
-
-
   if (!AI_CONFIG.roboflowApiKey) {
     throw new Error('Roboflow API key not configured');
   }
@@ -113,16 +110,11 @@ const callRoboflowService = async (imageData: any) => {
   // Convertir imagen a formato que espera Roboflow
   let imageBase64 = imageData.image || imageData;
 
-
-
   // Roboflow quiere SOLO base64 puro, sin prefijos
   if (typeof imageBase64 === 'string' && imageBase64.startsWith('data:image')) {
     // Quitar el prefijo data URL si existe
     imageBase64 = imageBase64.split(',')[1];
-
   }
-
-
 
   const response = await fetch(
     `${AI_CONFIG.roboflowUrl}?api_key=${AI_CONFIG.roboflowApiKey}`,
@@ -144,8 +136,6 @@ const callRoboflowService = async (imageData: any) => {
 
   const result = (await response.json()) as any;
 
-
-
   // Convertir respuesta de Roboflow al formato esperado
   return {
     top: result.predictions?.[0]?.class || 'romero',
@@ -165,7 +155,6 @@ const classifyPlant = async (imageData: any) => {
         console.warn('⚠️ Roboflow service failed:', error);
 
         if (AI_CONFIG.retryWithMock) {
-
           const mockResult = (await callMockService(imageData)) as any;
           return { ...mockResult, fallback: true };
         }
@@ -430,11 +419,9 @@ app.get('/api/temperature-alert', async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Error al generar la alerta de temperatura:', error);
-    res
-      .status(500)
-      .json({
-        error: 'No se pudieron obtener los datos de temperatura de la NASA.',
-      });
+    res.status(500).json({
+      error: 'No se pudieron obtener los datos de temperatura de la NASA.',
+    });
   }
 });
 
@@ -442,7 +429,7 @@ app.get('/api/temperature-alert', async (req, res) => {
 app.get('/api/irrigate', async (req, res) => {
   try {
     console.log('💧 Activando riego automático...');
-    
+
     // Llamar al mock_ai_server.py que se comunica con el Arduino
     const response = await fetch('http://localhost:5001/irrigate', {
       method: 'GET',
@@ -460,18 +447,17 @@ app.get('/api/irrigate', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Riego automático activado correctamente',
+      message: 'Riego automático activado 💧',
       arduino_response: data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('❌ Error activando riego:', error);
     res.status(500).json({
       success: false,
       error: 'No se pudo activar el riego automático',
       details: error instanceof Error ? error.message : 'Error desconocido',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 });
