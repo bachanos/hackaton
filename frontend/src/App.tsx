@@ -276,143 +276,151 @@ function App() {
           <p>Con tecnología de APIs de la NASA y datos meteorológicos en tiempo real</p>
         </header>
 
-        <main className="main-content">
-          {/* Panel de configuración */}
-          <div className="config-panel">
-            <h3>📍 Ubicación del Riego</h3>
-            <div className="location-info">
-              <div className="default-location">
-                <h4>🏛️ Edificio EINA - Universidad de Zaragoza</h4>
-                <p className="location-details">
-                  📐 41°41'01"N 0°53'17"O • 🎓 Escuela de Ingeniería y Arquitectura
-                </p>
-                <p className="coords-display">
-                  📊 Lat: {coordinates.lat.toFixed(4)}° | Lon: {coordinates.lon.toFixed(4)}°
-                </p>
+        {/* Información integrada: ubicación + datos meteorológicos */}
+        {wateringData && (
+          <div className="top-info-bar">
+            <div className="location-summary">
+              <div className="location-icon">📍</div>
+              <div className="location-text">
+                <span className="location-name">EINA - Zaragoza</span>
+                <span className="location-coords">{coordinates.lat.toFixed(2)}°N {Math.abs(coordinates.lon).toFixed(2)}°O</span>
               </div>
             </div>
+            
+            <div className="weather-data">
+              <div className="data-item">
+                <span className="data-icon">🌡️</span>
+                <span className="data-value">{wateringData.currentTemp}°C</span>
+              </div>
+              <div className="data-item">
+                <span className="data-icon">💨</span>
+                <span className="data-value">{wateringData.currentHumidity}%</span>
+              </div>
+              <div className="data-item">
+                <span className="data-icon">🧮</span>
+                <span className="data-value">{wateringData.calculation.etcPlant.toFixed(2)} mm</span>
+              </div>
+            </div>
+          </div>
+        )}
 
-
-
-            {/* Panel de detección automática */}
-            <div className="vision-panel">
-              <h4>📹 Detección Automática con IA</h4>
-              <div className="vision-content">
-                <div className="camera-preview-container">
-                  <div className="webcam-container">
-                    {webcamActive && webcamStream ? (
-                      <video
-                        ref={(video) => {
-                          if (video && webcamStream) {
-                            video.srcObject = webcamStream;
-                          }
-                        }}
-                        autoPlay
-                        muted
-                        className="webcam-feed"
-                      />
-                    ) : (
-                      <div className="webcam-placeholder">
-                        <div className="camera-icon">📷</div>
-                        <p>Cámara desconectada</p>
-                      </div>
-                    )}
-                    <div className="camera-label">📹 Video en tiempo real</div>
-                  </div>
-
-                  <div className="captured-image-container">
-                    {capturedImage ? (
-                      <img
-                        src={capturedImage}
-                        alt="Imagen capturada"
-                        className="captured-image"
-                      />
-                    ) : (
-                      <div className="capture-placeholder">
-                        <div className="capture-icon">📸</div>
-                        <p>Imagen capturada aparecerá aquí</p>
-                      </div>
-                    )}
-                    <div className="camera-label">📸 Última captura</div>
-                  </div>
-                </div>
-
-                {/* Selector de cámara */}
-                <div className="camera-selector">
-                  <label htmlFor="camera-select">📹 Seleccionar cámara:</label>
-                  <select
-                    id="camera-select"
-                    value={selectedCameraId}
-                    onChange={(e) => setSelectedCameraId(e.target.value)}
-                    disabled={webcamActive}
-                    className="camera-dropdown"
-                  >
-                    {availableCameras.map((camera, index) => (
-                      <option key={camera.deviceId} value={camera.deviceId}>
-                        {camera.label || `Cámara ${index + 1}`}
-                      </option>
-                    ))}
-                  </select>
-                  {webcamActive && (
-                    <p className="camera-hint">💡 Para cambiar cámara, para primero la actual</p>
-                  )}
-                </div>
-
-                <div className="vision-controls">
-                  <button
-                    className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
-                    onClick={webcamActive ? stopWebcam : startWebcam}
-                  >
-                    {webcamActive ? '⏹️ Parar Cámara' : '▶️ Iniciar Cámara'}
-                  </button>
-
-                  <button
-                    className="vision-btn detect"
-                    onClick={detectPlantWithCamera}
-                    disabled={visionLoading || !webcamActive}
-                  >
-                    {visionLoading ? '🔍 Detectando...' : '📸 Detectar Planta'}
-                  </button>
-                </div>
-
-                <div className="vision-status">
-                  <span className={`status-indicator ${webcamActive ? 'connected' : 'disconnected'}`}>
-                    {webcamActive ? '🟢 Cámara activa' : '🔴 Cámara inactiva'}
-                  </span>
-                  {lastDetection && (
-                    <div className="last-detection">
-                      <span className="detection-result">
-                        Última detección: {lastDetection.plant} ({(lastDetection.confidence * 100).toFixed(1)}%)
-                      </span>
-                      <span className="detection-time">
-                        {new Date(lastDetection.timestamp).toLocaleTimeString()}
-                      </span>
+        <main className="main-content">
+          {/* Panel de detección automática */}
+          <div className="vision-panel">
+            <h4>📹 Detección Automática con IA</h4>
+            <div className="vision-content">
+              <div className="camera-preview-container">
+                <div className="webcam-container">
+                  {webcamActive && webcamStream ? (
+                    <video
+                      ref={(video) => {
+                        if (video && webcamStream) {
+                          video.srcObject = webcamStream;
+                        }
+                      }}
+                      autoPlay
+                      muted
+                      className="webcam-feed"
+                    />
+                  ) : (
+                    <div className="webcam-placeholder">
+                      <div className="camera-icon">📷</div>
+                      <p>Cámara desconectada</p>
                     </div>
                   )}
+                  <div className="camera-label">📹 Video en tiempo real</div>
                 </div>
 
-                {/* Mostrar errores */}
-                {error && (
-                  <div className="error-message">
-                    {error}
-                  </div>
-                )}
+                <div className="captured-image-container">
+                  {capturedImage ? (
+                    <img
+                      src={capturedImage}
+                      alt="Imagen capturada"
+                      className="captured-image"
+                    />
+                  ) : (
+                    <div className="capture-placeholder">
+                      <div className="capture-icon">📸</div>
+                      <p>Imagen capturada aparecerá aquí</p>
+                    </div>
+                  )}
+                  <div className="camera-label">📸 Última captura</div>
+                </div>
+              </div>
 
-                {!webcamActive && (
-                  <p className="vision-help">
-                    💡 Para detectar plantas:
-                    <br />1. Haz clic en "Iniciar Cámara"
-                    <br />2. Apunta a tu planta y haz clic en "Detectar Planta"
-                    <br />3. El sistema identificará automáticamente el tipo
-                  </p>
+              {/* Selector de cámara */}
+              <div className="camera-selector">
+                <label htmlFor="camera-select">📹 Seleccionar cámara:</label>
+                <select
+                  id="camera-select"
+                  value={selectedCameraId}
+                  onChange={(e) => setSelectedCameraId(e.target.value)}
+                  disabled={webcamActive}
+                  className="camera-dropdown"
+                >
+                  {availableCameras.map((camera, index) => (
+                    <option key={camera.deviceId} value={camera.deviceId}>
+                      {camera.label || `Cámara ${index + 1}`}
+                    </option>
+                  ))}
+                </select>
+                {webcamActive && (
+                  <p className="camera-hint">💡 Para cambiar cámara, para primero la actual</p>
                 )}
               </div>
+
+              <div className="vision-controls">
+                <button
+                  className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
+                  onClick={webcamActive ? stopWebcam : startWebcam}
+                >
+                  {webcamActive ? '⏹️ Parar Cámara' : '▶️ Iniciar Cámara'}
+                </button>
+
+                <button
+                  className="vision-btn detect"
+                  onClick={detectPlantWithCamera}
+                  disabled={visionLoading || !webcamActive}
+                >
+                  {visionLoading ? '🔍 Detectando...' : '📸 Detectar Planta'}
+                </button>
+              </div>
+
+              <div className="vision-status">
+                <span className={`status-indicator ${webcamActive ? 'connected' : 'disconnected'}`}>
+                  {webcamActive ? '🟢 Cámara activa' : '🔴 Cámara inactiva'}
+                </span>
+                {lastDetection && (
+                  <div className="last-detection">
+                    <span className="detection-result">
+                      Última detección: {lastDetection.plant} ({(lastDetection.confidence * 100).toFixed(1)}%)
+                    </span>
+                    <span className="detection-time">
+                      {new Date(lastDetection.timestamp).toLocaleTimeString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Mostrar errores */}
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
+
+              {!webcamActive && (
+                <p className="vision-help">
+                  💡 Para detectar plantas:
+                  <br />1. Haz clic en "Iniciar Cámara"
+                  <br />2. Apunta a tu planta y haz clic en "Detectar Planta"
+                  <br />3. El sistema identificará automáticamente el tipo
+                </p>
+              )}
             </div>
-
-
           </div>
 
-          {/* Resultado principal */}
+          {/* Resultado principal con información contextual */}
           {wateringData && (
             <div className="main-result-container">
               <div className="result-card main-result">
@@ -420,24 +428,7 @@ function App() {
                 <div className="big-number">{wateringData.requiredMl} ml</div>
                 <p>Para {wateringData.plant.name} en maceta de {wateringData.potSize}cm</p>
                 <div className="plant-summary">
-                  <span className="plant-coeff">Coeficiente: {wateringData.plant.coefficient}</span>
                   <span className="plant-desc-small">{wateringData.plant.description}</span>
-                </div>
-              </div>
-
-              {/* Datos secundarios compactos */}
-              <div className="secondary-data">
-                <div className="data-item">
-                  <span className="data-icon">🌡️</span>
-                  <span className="data-value">{wateringData.currentTemp}°C</span>
-                </div>
-                <div className="data-item">
-                  <span className="data-icon">💨</span>
-                  <span className="data-value">{wateringData.currentHumidity}%</span>
-                </div>
-                <div className="data-item">
-                  <span className="data-icon">🧮</span>
-                  <span className="data-value">{wateringData.calculation.etcPlant.toFixed(2)} mm</span>
                 </div>
               </div>
             </div>
