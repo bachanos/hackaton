@@ -36,6 +36,21 @@ interface WateringData {
 
 
 
+// Función para mapear los valores de detección a los formatos esperados por el quiz
+const mapDetectedPlantToQuizFormat = (detectedPlant: string): string => {
+  const plantMapping: { [key: string]: string } = {
+    'mint': 'menta',
+    'menta': 'menta',
+    'romeri': 'romero',
+    'romero': 'romero',
+    'rosemary': 'romero'
+  };
+  
+  const mapped = plantMapping[detectedPlant.toLowerCase()] || 'romero';
+  console.log(`🔄 Mapeo de planta: "${detectedPlant}" → "${mapped}"`);
+  return mapped;
+};
+
 function App() {
   const [wateringData, setWateringData] = useState<WateringData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -145,8 +160,8 @@ function App() {
         const detectedPlant = topPrediction.class || 'romero';
         const confidence = topPrediction.confidence || 0.0;
 
-        // Usar la planta detectada si existe en nuestro sistema, sino romero por defecto
-        const plantToUse = ['menta', 'romero'].includes(detectedPlant) ? detectedPlant : 'romero';
+        // Mapear la planta detectada al formato esperado
+        const plantToUse = mapDetectedPlantToQuizFormat(detectedPlant);
 
         setSelectedPlant(plantToUse);
         setLastDetection({
@@ -467,7 +482,7 @@ function App() {
                 >
                   ✕
                 </button>
-                <UnifiedQuiz capturedImage={capturedImage} detectedPlant={wateringData?.plant?.name  } />
+                <UnifiedQuiz capturedImage={capturedImage} detectedPlant={mapDetectedPlantToQuizFormat(lastDetection.plant)} />
               </div>
             </div>
           )}

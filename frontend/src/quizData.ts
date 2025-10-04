@@ -389,65 +389,83 @@ const romeroQuestions: UnifiedQuestion[] = [
 // Preguntas específicas para menta
 const mentaQuestions: UnifiedQuestion[] = [
   {
-    id: 7,
+    id: 4,
     type: 'text-with-images',
-    questionText: '¿Qué característica principal tiene la menta?',
+    questionText:
+      'Tienes una pequeña maceta de Menta y quieres asegurarte de que está sana. Observa estas cuatro imágenes de plantas de Menta. La alerta de los satélites de la NASA para tu zona dice que la humedad del suelo es muy baja y que las temperaturas son más altas de lo normal. ¿Cuál de las siguientes imágenes muestra la Menta que probablemente está sufriendo estrés por falta de agua y exceso de calor, y por lo tanto necesita riego urgente y un poco de sombra?',
     answers: [
       {
         id: 1,
-        text: 'Hojas dentadas y aromáticas',
+        text: 'Imagen A: Muestra una menta sana, verde y erguida',
         imageUrl:
           'https://images.unsplash.com/photo-1628626617617-6ba8c9b5dc12?w=400&h=300&fit=crop',
       },
       {
         id: 2,
-        text: 'Hojas lisas sin aroma',
+        text: 'Imagen B: Muestra una menta mustia, con las hojas caídas y la tierra seca',
         imageUrl:
-          'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
+          'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
       },
       {
         id: 3,
-        text: 'Hojas muy pequeñas',
+        text: 'Imagen C: Muestra una menta con posibles signos de deficiencia nutricional o manchas',
         imageUrl:
-          'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&h=300&fit=crop',
+          'https://images.unsplash.com/photo-1566281796817-e5b18a2e75b1?w=400&h=300&fit=crop',
       },
       {
         id: 4,
-        text: 'Hojas de color rojo',
+        text: 'Imagen D: Muestra una variedad de menta de color más oscuro, pero con aspecto saludable',
         imageUrl:
-          'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
+          'https://images.unsplash.com/photo-1516740154405-0adb7163e8d8?w=400&h=300&fit=crop',
       },
     ],
-    correctAnswerId: 1,
+    correctAnswerId: 2,
     explanation:
-      'La menta se caracteriza por sus hojas dentadas, muy aromáticas y de color verde brillante.',
-  },
-  {
-    id: 8,
-    type: 'image-with-text',
-    questionText: '¿Qué tipo de suelo prefiere la menta?',
-    questionImageUrl:
-      'https://images.unsplash.com/photo-1628626617617-6ba8c9b5dc12?w=600&h=400&fit=crop',
-    answers: [
-      'Suelo muy seco',
-      'Suelo húmedo y bien drenado',
-      'Solo arena',
-      'Suelo arcilloso puro',
-    ],
-    correctAnswer: 1,
-    explanation:
-      'La menta prefiere suelos húmedos pero bien drenados, y necesita más agua que plantas como el romero.',
+      'La Imagen B muestra una menta mustia, con las hojas caídas y la tierra seca, lo cual es un claro signo de falta de agua y estrés por calor. A diferencia del romero que es resistente a la sequía, la menta necesita más humedad y sufre rápidamente cuando la humedad del suelo es baja y las temperaturas son altas. Los datos de satélites NASA sobre humedad del suelo y temperatura son fundamentales para detectar estas condiciones de estrés.',
   },
 ];
 
 // Función para obtener las preguntas según la planta detectada
 export const getQuizQuestions = (detectedPlant?: string): UnifiedQuestion[] => {
-  const specificQuestions =
+  console.log('🐛 DEBUG getQuizQuestions - detectedPlant:', detectedPlant);
+  console.log('🐛 DEBUG - typeof detectedPlant:', typeof detectedPlant);
+  console.log('🐛 DEBUG - detectedPlant length:', detectedPlant?.length);
+  console.log('🐛 DEBUG - detectedPlant JSON:', JSON.stringify(detectedPlant));
+  console.log(
+    '🐛 DEBUG - detectedPlant === "romero":',
     detectedPlant === 'romero'
-      ? romeroQuestions
-      : detectedPlant === 'menta'
-      ? mentaQuestions
-      : [];
+  );
+  console.log(
+    '🐛 DEBUG - detectedPlant === "menta":',
+    detectedPlant === 'menta'
+  );
 
-  return [...generalQuestions, ...specificQuestions];
+  let specificQuestions: UnifiedQuestion[] = [];
+
+  if (detectedPlant === 'romero') {
+    specificQuestions = romeroQuestions;
+    console.log('🐛 DEBUG - Usando preguntas de ROMERO');
+  } else if (detectedPlant === 'menta') {
+    specificQuestions = mentaQuestions;
+    console.log('🐛 DEBUG - Usando preguntas de MENTA');
+  } else {
+    console.log(
+      '🐛 DEBUG - No se detectó planta específica, usando array vacío'
+    );
+  }
+
+  console.log('🐛 DEBUG - specificQuestions length:', specificQuestions.length);
+  console.log(
+    '🐛 DEBUG - specificQuestions titles:',
+    specificQuestions.map(q => q.questionText.substring(0, 50) + '...')
+  );
+
+  const allQuestions = [...generalQuestions, ...specificQuestions];
+  console.log('🐛 DEBUG - total questions:', allQuestions.length);
+  console.log(
+    '🐛 DEBUG - all question titles:',
+    allQuestions.map(q => q.questionText.substring(0, 50) + '...')
+  );
+
+  return allQuestions;
 };
