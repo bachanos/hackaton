@@ -69,6 +69,45 @@ def health():
         "available_plants": list(MOCK_PLANTS.keys())
     })
 
+@app.route('/humidity', methods=['GET'])
+def get_humidity():
+    """Endpoint que devuelve humedad real del Arduino"""
+    import serial
+
+    try:
+        # Conectar al Arduino
+        arduino = serial.Serial(port='/dev/cu.usbserial-110', baudrate=9600, timeout=2)
+        time.sleep(0.5)  # Esperar conexión
+
+        # Enviar comando para pedir humedad (asumiendo comando 'H')
+        arduino.write(b'H')
+
+        # Leer respuesta del Arduino
+        response_line = arduino.readline().decode('utf-8').strip()
+        arduino.close()
+
+        # Parsear "Humidity: 45.2%" -> extraer 45.2
+        if "Humidity:" in response_line:
+            humidity_str = response_line.split("Humidity:")[1].strip().replace("%", "")
+            humidity_value = float(humidity_str)
+        else:
+            raise ValueError(f"Formato inesperado del Arduino: {response_line}")
+
+        response = {
+            "humidity": humidity_value,
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "unit": "%",
+            "sensor": "arduino",
+            "raw_response": response_line
+        }
+
+        print(f"💧 Humedad Arduino: {humidity_value}% (raw: {response_line})")
+        return jsonify(response)
+
+    except Exception as e:
+        print(f"❌ Error en lectura de humedad: {e}")
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/toggle-plant', methods=['POST'])
 def toggle_plant():
     """
@@ -91,6 +130,7 @@ if __name__ == '__main__':
     print("📡 Endpoints disponibles:")
     print("   POST /classify - Clasificar planta (siempre devuelve romero)")
     print("   GET /health - Estado del servicio")
+    print("   GET /humidity - Obtener humedad simulada")
     print("   POST /toggle-plant - Cambiar planta manualmente")
     print("🚀 Servidor corriendo en http://localhost:5001")
 
