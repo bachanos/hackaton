@@ -150,7 +150,7 @@ const UnifiedQuiz: React.FC = () => {
           ></div>
         </div>
         <p className="progress-text">
-          Pregunta {currentQuestionIndex + 1} de {totalQuestions} • Correctas: {correctAnswers}
+          Pregunta {currentQuestionIndex + 1} de {totalQuestions}
         </p>
       </div>
 
