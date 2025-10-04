@@ -39,8 +39,10 @@ interface WateringData {
 function App() {
   const [wateringData, setWateringData] = useState<WateringData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [coordinates, setCoordinates] = useState({ lat: 41.6836, lon: -0.8881 });
   const [selectedPlant, setSelectedPlant] = useState('menta');
+  
+  // Coordenadas fijas para EINA
+  const coordinates = { lat: 41.6836, lon: -0.8881 };
   const [visionLoading, setVisionLoading] = useState(false);
   const [lastDetection, setLastDetection] = useState<any>(null);
   const [visionStatus, setVisionStatus] = useState<string>('disconnected');
@@ -412,37 +414,7 @@ function App() {
               </div>
             </div>
 
-            <div className="coordinates">
-              <label>
-                🌍 Latitud:
-                <input
-                  type="number"
-                  step="0.0001"
-                  value={coordinates.lat}
-                  onChange={(e) => setCoordinates(prev => ({ ...prev, lat: parseFloat(e.target.value) }))}
-                  placeholder="41.6836"
-                />
-              </label>
-              <label>
-                🌍 Longitud:
-                <input
-                  type="number"
-                  step="0.0001"
-                  value={coordinates.lon}
-                  onChange={(e) => setCoordinates(prev => ({ ...prev, lon: parseFloat(e.target.value) }))}
-                  placeholder="-0.8881"
-                />
-              </label>
-            </div>
-            <div className="action-buttons">
-              <button
-                className="reset-btn"
-                onClick={() => setCoordinates({ lat: 41.6836, lon: -0.8881 })}
-                type="button"
-              >
-                🏛️ Volver a EINA
-              </button>
-            </div>
+
           </div>
 
           {/* Resultados principales */}
@@ -517,7 +489,7 @@ function App() {
             </div>
           )}
 
-          <UnifiedQuiz />
+          <UnifiedQuiz capturedImage={capturedImage} />
 
 
 

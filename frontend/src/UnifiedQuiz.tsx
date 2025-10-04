@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { unifiedQuizQuestions, UnifiedQuestion, Answer } from './quizData';
 import './UnifiedQuiz.css';
 
-const UnifiedQuiz: React.FC = () => {
+interface UnifiedQuizProps {
+  capturedImage?: string | null;
+}
+
+const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
@@ -23,7 +27,13 @@ const UnifiedQuiz: React.FC = () => {
       const answers = currentQuestion.answers as Answer[];
       isCorrect = answers[answerIndex].id === currentQuestion.correctAnswerId;
     } else {
-      isCorrect = answerIndex === currentQuestion.correctAnswer;
+      // Para imagen con texto - verificar si usamos imagen capturada
+      if (currentQuestion.id === 1 && capturedImage) {
+        // Para imagen capturada: 0=Menta (correcto), 1=Romero, 2=Lavanda, 3=Albahaca
+        isCorrect = answerIndex === 0; // Menta es la respuesta correcta por defecto
+      } else {
+        isCorrect = answerIndex === currentQuestion.correctAnswer;
+      }
     }
 
     if (isCorrect) {
@@ -102,37 +112,59 @@ const UnifiedQuiz: React.FC = () => {
   // Renderizar pregunta tipo imagen con respuestas texto
   const renderImageWithText = (question: UnifiedQuestion) => {
     const answers = question.answers as string[];
+    
+    // Usar imagen capturada para la primera pregunta si está disponible
+    const imageToShow = question.id === 1 && capturedImage 
+      ? capturedImage 
+      : question.questionImageUrl;
+    
+    // Modificar la pregunta si usamos la imagen capturada
+    const questionText = question.id === 1 && capturedImage
+      ? '¿Qué tipo de planta es la que aparece en esta imagen que acabas de capturar?'
+      : question.questionText;
 
     return (
       <>
         <div className="question-container">
-          <h3>{question.questionText}</h3>
+          <h3>{questionText}</h3>
         </div>
         <div className="image-quiz-content">
           <div className="image-quiz-image-wrapper">
-            <img src={question.questionImageUrl} alt="Pregunta del quiz" className="quiz-image-large" />
+            <img src={imageToShow} alt="Pregunta del quiz" className="quiz-image-large" />
           </div>
           <div className="image-quiz-answers">
-            {answers.map((answer: string, index: number) => {
-              let buttonClass = 'image-quiz-answer-btn';
-              if (selectedAnswer !== null) {
-                if (index === question.correctAnswer) {
-                  buttonClass += ' correct';
-                } else if (index === selectedAnswer) {
-                  buttonClass += ' incorrect';
+            {(() => {
+              // Si es la primera pregunta y tenemos imagen capturada, usar respuestas de plantas
+              const answersToShow = question.id === 1 && capturedImage
+                ? ['Menta', 'Romero', 'Lavanda', 'Albahaca']
+                : answers;
+              
+              const correctAnswerIndex = question.id === 1 && capturedImage
+                ? 0 // Menta por defecto, o podríamos usar lastDetection
+                : question.correctAnswer;
+              
+              return answersToShow.map((answer: string, index: number) => {
+                let buttonClass = 'image-quiz-answer-btn';
+                if (selectedAnswer !== null) {
+                  if (index === correctAnswerIndex) {
+                    buttonClass += ' correct';
+                  } else if (index === selectedAnswer) {
+                    buttonClass += ' incorrect';
+                  }
                 }
-              }
-              return (
-                <button
-                  key={index}
-                  className={buttonClass}
-                  onClick={() => handleAnswerClick(index)}
-                  disabled={selectedAnswer !== null}
-                >
-                  {answer}
-                </button>
-              );
-            })}
+                
+                return (
+                  <button
+                    key={index}
+                    className={buttonClass}
+                    onClick={() => handleAnswerClick(index)}
+                    disabled={selectedAnswer !== null}
+                  >
+                    {answer}
+                  </button>
+                );
+              });
+            })()}
           </div>
         </div>
       </>
