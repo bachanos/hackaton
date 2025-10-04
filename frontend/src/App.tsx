@@ -125,6 +125,12 @@ function App() {
   };
 
   const detectPlantWithCamera = async () => {
+    // Si ya hay una imagen capturada, recargar la página completa
+    if (capturedImage) {
+      window.location.reload();
+      return;
+    }
+
     setVisionLoading(true);
     setError(null); // Limpiar errores previos
 
