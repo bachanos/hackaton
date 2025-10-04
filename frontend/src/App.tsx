@@ -155,14 +155,14 @@ function App() {
         setError(null);
 
         console.log(`🌿 Roboflow detectó: ${detectedPlant} (${(confidence * 100).toFixed(1)}%) -> Usando: ${plantToUse}`);
-
-        // Automáticamente recalcular el riego con la nueva planta
-        setTimeout(() => {
-          fetchWateringData();
-        }, 500);
       } else {
         setError('❌ Roboflow no detectó ninguna planta');
       }
+
+      // Siempre recalcular el riego después de capturar una imagen, independientemente de la detección
+      setTimeout(() => {
+        fetchWateringData();
+      }, 500);
 
     } catch (error: any) {
       console.error('Error en detección de planta:', error);
@@ -441,13 +441,6 @@ function App() {
                 type="button"
               >
                 🏛️ Volver a EINA
-              </button>
-              <button
-                className="calculate-btn"
-                onClick={fetchWateringData}
-                disabled={loading}
-              >
-                {loading ? '🔄 Calculando...' : '💧 Calcular Riego Necesario'}
               </button>
             </div>
           </div>
