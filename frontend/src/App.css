@@ -208,19 +208,52 @@ body {
 
 /* Responsive para cámara unificada */
 @media (max-width: 768px) {
+  .vision-layout {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .camera-column {
+    flex: none; /* Quitar ancho fijo en móvil */
+  }
+  
   .camera-view {
     height: 250px;
   }
   
-  .back-to-webcam-btn {
-    font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
+  .info-placeholder {
+    min-height: 200px;
+    padding: 1.5rem;
+  }
+  
+  .placeholder-icon {
+    font-size: 2rem;
+  }
+  
+  .camera-controls {
+    gap: 0.3rem;
+  }
+  
+  .camera-controls .vision-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    min-width: 70px;
+    max-width: 100px;
   }
 }
 
 @media (max-width: 480px) {
   .camera-view {
     height: 200px;
+  }
+  
+  .info-placeholder {
+    min-height: 150px;
+    padding: 1rem;
+  }
+  
+  .vision-layout {
+    gap: 1rem;
   }
 }
 
@@ -553,13 +586,87 @@ body {
 }
 
 /* Estilos para vista de dos columnas de cámara */
+/* Layout de dos columnas para la sección de visión */
+.vision-layout {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.camera-column {
+  flex: 0 0 400px; /* Ancho fijo para la columna de la cámara */
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.info-column {
+  flex: 1; /* Toma el espacio restante */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Controles de cámara encima del cuadro - compactos */
+.camera-controls {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.camera-controls .vision-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  min-width: 80px;
+  max-width: 120px;
+  flex: none;
+  border-radius: 6px;
+}
+
+.camera-controls .vision-btn.back-to-webcam {
+  background: rgba(78, 205, 196, 0.2);
+  border-color: #4ecdc4;
+  color: #4ecdc4;
+}
+
+/* Estado de la cámara encima del cuadro */
+.camera-status {
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.camera-status .status-indicator {
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.camera-status .last-detection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.camera-status .detection-result {
+  color: #4ecdc4;
+  font-weight: bold;
+}
+
+.camera-status .detection-time {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
 /* Contenedor unificado de cámara */
 .unified-camera-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
 }
 
 .camera-view {
@@ -569,8 +676,62 @@ body {
   overflow: hidden;
   background: rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 500px;
-  height: 300px;
+  height: 320px;
+}
+
+/* Placeholder para la columna de información */
+.info-placeholder {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+}
+
+.info-placeholder p {
+  margin: 0;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Versión compacta del resultado principal para la columna derecha */
+.result-card.main-result.compact {
+  margin: 0;
+  padding: 1.5rem;
+  max-width: none;
+  height: fit-content;
+}
+
+.result-card.main-result.compact .big-number {
+  font-size: 2.5rem;
+  margin: 0.8rem 0;
+}
+
+.result-card.main-result.compact h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.result-card.main-result.compact p {
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.result-card.main-result.compact .plant-summary {
+  padding: 0.6rem;
+  margin-top: 0.8rem;
 }
 
 .webcam-feed, .captured-image-display {
@@ -580,22 +741,7 @@ body {
   display: block;
 }
 
-/* Botón para volver a la webcam */
-.back-to-webcam-btn {
-  background: rgba(78, 205, 196, 0.2);
-  border: 1px solid #4ecdc4;
-  color: #4ecdc4;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
 
-.back-to-webcam-btn:hover {
-  background: rgba(78, 205, 196, 0.3);
-  transform: translateY(-2px);
-}
 
 /* Mantener estilos existentes para compatibilidad */
 .camera-preview-container {

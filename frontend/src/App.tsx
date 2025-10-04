@@ -307,85 +307,114 @@ function App() {
         <main className="main-content">
           {/* Panel de detección automática */}
           <div className="vision-panel">
-            <h4>📹 Detección Automática con IA</h4>
             <div className="vision-content">
-              <div className="unified-camera-container">
-                {/* Mostrar imagen capturada si existe, sino mostrar webcam */}
-                {capturedImage ? (
-                  <div className="camera-view">
-                    <img
-                      src={capturedImage}
-                      alt="Imagen capturada"
-                      className="captured-image-display"
-                    />
-                    <div className="camera-label">📸 Imagen capturada</div>
+              <div className="vision-layout">
+                {/* Columna izquierda: Cámara */}
+                <div className="camera-column">
+                  {/* Controles de cámara encima del cuadro */}
+                  <div className="camera-controls">
+                    <button
+                      className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
+                      onClick={webcamActive ? stopWebcam : startWebcam}
+                    >
+                      {webcamActive ? '⏹️ Parar Cámara' : '▶️ Iniciar Cámara'}
+                    </button>
+
+                    <button
+                      className="vision-btn detect"
+                      onClick={detectPlantWithCamera}
+                      disabled={visionLoading || !webcamActive}
+                    >
+                      {visionLoading ? '🔍 Detectando...' : '📸 Detectar Planta'}
+                    </button>
+
+                    {/* Botón para volver a la webcam si hay imagen capturada */}
+                    {capturedImage && (
+                      <button 
+                        className="vision-btn back-to-webcam"
+                        onClick={() => setCapturedImage(null)}
+                      >
+                        🔄 Volver a cámara en vivo
+                      </button>
+                    )}
                   </div>
-                ) : (
-                  <div className="camera-view">
-                    {webcamActive && webcamStream ? (
-                      <video
-                        ref={(video) => {
-                          if (video && webcamStream) {
-                            video.srcObject = webcamStream;
-                          }
-                        }}
-                        autoPlay
-                        muted
-                        className="webcam-feed"
-                      />
-                    ) : (
-                      <div className="webcam-placeholder">
-                        <div className="camera-icon">📷</div>
-                        <p>Cámara desconectada</p>
+
+                  {/* Estado de la cámara */}
+                  <div className="camera-status">
+                    <span className={`status-indicator ${webcamActive ? 'connected' : 'disconnected'}`}>
+                      {webcamActive ? '🟢 Cámara activa' : '🔴 Cámara inactiva'}
+                    </span>
+                    {lastDetection && (
+                      <div className="last-detection">
+                        <span className="detection-result">
+                          Última detección: {lastDetection.plant} ({(lastDetection.confidence * 100).toFixed(1)}%)
+                        </span>
+                        <span className="detection-time">
+                          {new Date(lastDetection.timestamp).toLocaleTimeString()}
+                        </span>
                       </div>
                     )}
-                    <div className="camera-label">📹 Video en tiempo real</div>
                   </div>
-                )}
-                
-                {/* Botón para volver a la webcam si hay imagen capturada */}
-                {capturedImage && (
-                  <button 
-                    className="back-to-webcam-btn"
-                    onClick={() => setCapturedImage(null)}
-                  >
-                    🔄 Volver a cámara en vivo
-                  </button>
-                )}
-              </div>
 
-              <div className="vision-controls">
-                <button
-                  className={`vision-btn ${webcamActive ? 'stop' : 'start'}`}
-                  onClick={webcamActive ? stopWebcam : startWebcam}
-                >
-                  {webcamActive ? '⏹️ Parar Cámara' : '▶️ Iniciar Cámara'}
-                </button>
-
-                <button
-                  className="vision-btn detect"
-                  onClick={detectPlantWithCamera}
-                  disabled={visionLoading || !webcamActive}
-                >
-                  {visionLoading ? '🔍 Detectando...' : '📸 Detectar Planta'}
-                </button>
-              </div>
-
-              <div className="vision-status">
-                <span className={`status-indicator ${webcamActive ? 'connected' : 'disconnected'}`}>
-                  {webcamActive ? '🟢 Cámara activa' : '🔴 Cámara inactiva'}
-                </span>
-                {lastDetection && (
-                  <div className="last-detection">
-                    <span className="detection-result">
-                      Última detección: {lastDetection.plant} ({(lastDetection.confidence * 100).toFixed(1)}%)
-                    </span>
-                    <span className="detection-time">
-                      {new Date(lastDetection.timestamp).toLocaleTimeString()}
-                    </span>
+                  <div className="unified-camera-container">
+                    {/* Mostrar imagen capturada si existe, sino mostrar webcam */}
+                    {capturedImage ? (
+                      <div className="camera-view">
+                        <img
+                          src={capturedImage}
+                          alt="Imagen capturada"
+                          className="captured-image-display"
+                        />
+                        <div className="camera-label">📸 Imagen capturada</div>
+                      </div>
+                    ) : (
+                      <div className="camera-view">
+                        {webcamActive && webcamStream ? (
+                          <video
+                            ref={(video) => {
+                              if (video && webcamStream) {
+                                video.srcObject = webcamStream;
+                              }
+                            }}
+                            autoPlay
+                            muted
+                            className="webcam-feed"
+                          />
+                        ) : (
+                          <div className="webcam-placeholder">
+                            <div className="camera-icon">📷</div>
+                            <p>Cámara desconectada</p>
+                          </div>
+                        )}
+                        <div className="camera-label">📹 Video en tiempo real</div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+
+                {/* Columna derecha: Información de riego o placeholder */}
+                <div className="info-column">
+                  {wateringData && capturedImage ? (
+                    <div className="result-card main-result compact">
+                      <h2>💧 Agua Necesaria Hoy</h2>
+                      <div className="big-number">{wateringData.requiredMl} ml</div>
+                      <p>Para {wateringData.plant.name} en maceta de {wateringData.potSize}cm</p>
+                      <div className="plant-summary">
+                        <span className="plant-desc-small">{wateringData.plant.description}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="info-placeholder">
+                      <div className="placeholder-icon">�</div>
+                      <p>Captura una imagen de tu planta para ver los cálculos de riego</p>
+                    </div>
+                  )}
+                </div>
               </div>
+
+
+
+
 
               {/* Mostrar errores */}
               {error && (
@@ -405,19 +434,7 @@ function App() {
             </div>
           </div>
 
-          {/* Resultado principal con información contextual */}
-          {wateringData && (
-            <div className="main-result-container">
-              <div className="result-card main-result">
-                <h2>💧 Agua Necesaria Hoy</h2>
-                <div className="big-number">{wateringData.requiredMl} ml</div>
-                <p>Para {wateringData.plant.name} en maceta de {wateringData.potSize}cm</p>
-                <div className="plant-summary">
-                  <span className="plant-desc-small">{wateringData.plant.description}</span>
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {/* Explicación detallada del cálculo */}
           {wateringData && (
