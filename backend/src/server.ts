@@ -88,7 +88,7 @@ const setCachedData = (key: string, data: any) => {
 
 // Funciones para servicios de IA
 const callMockService = async (imageData: any) => {
-  console.log('🤖 Usando servicio Mock AI...');
+
   const response = await fetch(AI_CONFIG.mockUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -104,7 +104,7 @@ const callMockService = async (imageData: any) => {
 };
 
 const callRoboflowService = async (imageData: any) => {
-  console.log('🚀 Usando Roboflow AI Service...');
+
 
   if (!AI_CONFIG.roboflowApiKey) {
     throw new Error('Roboflow API key not configured');
@@ -113,28 +113,16 @@ const callRoboflowService = async (imageData: any) => {
   // Convertir imagen a formato que espera Roboflow
   let imageBase64 = imageData.image || imageData;
 
-  console.log(
-    '🔍 Imagen original recibida (primeros 50 chars):',
-    typeof imageBase64 === 'string'
-      ? imageBase64.substring(0, 50)
-      : 'No es string'
-  );
+
 
   // Roboflow quiere SOLO base64 puro, sin prefijos
   if (typeof imageBase64 === 'string' && imageBase64.startsWith('data:image')) {
     // Quitar el prefijo data URL si existe
     imageBase64 = imageBase64.split(',')[1];
-    console.log('📤 Removido prefijo data URL');
+
   }
 
-  console.log(
-    '📤 Enviando a Roboflow imagen de tamaño:',
-    imageBase64 ? imageBase64.length : 0
-  );
-  console.log(
-    '📤 Formato final (primeros 50 chars):',
-    imageBase64.substring(0, 50)
-  );
+
 
   const response = await fetch(
     `${AI_CONFIG.roboflowUrl}?api_key=${AI_CONFIG.roboflowApiKey}`,
@@ -148,7 +136,7 @@ const callRoboflowService = async (imageData: any) => {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.log('❌ Error de Roboflow:', response.status, errorText);
+
     throw new Error(
       `Roboflow service error: ${response.status} - ${errorText}`
     );
@@ -156,7 +144,7 @@ const callRoboflowService = async (imageData: any) => {
 
   const result = (await response.json()) as any;
 
-  console.log('🔍 Respuesta RAW de Roboflow:', JSON.stringify(result, null, 2));
+
 
   // Convertir respuesta de Roboflow al formato esperado
   return {
@@ -177,7 +165,7 @@ const classifyPlant = async (imageData: any) => {
         console.warn('⚠️ Roboflow service failed:', error);
 
         if (AI_CONFIG.retryWithMock) {
-          console.log('🔄 Fallback to mock service...');
+
           const mockResult = (await callMockService(imageData)) as any;
           return { ...mockResult, fallback: true };
         }

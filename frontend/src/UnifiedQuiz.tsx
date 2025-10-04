@@ -94,12 +94,9 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
   const triggerAutoIrrigation = async () => {
     setIsIrrigating(true);
     try {
-      console.log('💧 Activando riego automático...');
       const response = await axios.get('/api/irrigate');
-      console.log('✅ Riego activado:', response.data);
       setIrrigationStatus('success');
     } catch (error) {
-      console.error('❌ Error activando riego:', error);
       setIrrigationStatus('error');
     } finally {
       setIsIrrigating(false);

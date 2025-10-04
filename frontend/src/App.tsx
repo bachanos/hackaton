@@ -41,7 +41,6 @@ const mapDetectedPlantToQuizFormat = (detectedPlant: string): string => {
   };
 
   const mapped = plantMapping[detectedPlant.toLowerCase()] || 'romero';
-  console.log(`🔄 Mapeo de planta: "${detectedPlant}" → "${mapped}"`);
   return mapped;
 };
 
@@ -109,7 +108,6 @@ function App() {
         
         if (gopro) {
           setSelectedCameraId(gopro.deviceId);
-          console.log('📹 GoPro encontrada y seleccionada automáticamente:', gopro.label);
         } else {
           // Buscar primera cámara que NO sea la webcam integrada del Mac
           const externalCamera = videoDevices.find(device => {
@@ -122,16 +120,14 @@ function App() {
           
           if (externalCamera) {
             setSelectedCameraId(externalCamera.deviceId);
-            console.log('📹 Cámara externa encontrada y seleccionada:', externalCamera.label);
           } else {
             // Como último recurso, usar la primera disponible
             setSelectedCameraId(videoDevices[0].deviceId);
-            console.log('📹 Solo webcam integrada disponible, seleccionando:', videoDevices[0].label || 'Cámara sin nombre');
           }
         }
       }
 
-      console.log('📹 Cámaras disponibles:', videoDevices.map(cam => cam.label || 'Cámara sin nombre'));
+
     } catch (error) {
       console.error('Error enumerando cámaras:', error);
     }
@@ -159,13 +155,12 @@ function App() {
 
     try {
       // Usar nuestro backend con formato correcto
-      console.log('� Enviando a nuestro backend...');
 
       const response = await axios.post('/api/classify-plant', {
         image: imageData // Enviar imagen completa con data:image prefix
       });
 
-      console.log('🔍 Respuesta del backend:', response.data);
+
 
       // Procesar respuesta, compatible con modo debug y normal
       let predictions = [];
@@ -196,7 +191,7 @@ function App() {
         // Limpiar error en caso de éxito
         setError(null);
 
-        console.log(`🌿 Roboflow detectó: ${detectedPlant} (${(confidence * 100).toFixed(1)}%) -> Usando: ${plantToUse}`);
+
       } else {
         setError('❌ Roboflow no detectó ninguna planta');
       }
@@ -288,7 +283,7 @@ function App() {
     // Usar JPEG con calidad reducida para menor tamaño
     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
 
-    console.log(`📸 Imagen capturada: ${videoWidth}x${videoHeight}, tamaño: ${dataUrl.length} chars`);
+
 
     return dataUrl;
   };
