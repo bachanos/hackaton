@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { unifiedQuizQuestions, UnifiedQuestion, Answer } from './quizData';
+import { getQuizQuestions, UnifiedQuestion, Answer } from './quizData';
 import './UnifiedQuiz.css';
 
 interface UnifiedQuizProps {
@@ -11,19 +11,24 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [answeredQuestions, setAnsweredQuestions] = useState(0);
   const [showResult, setShowResult] = useState(false);
+
+  // Generar preguntas según la planta detectada
+  const quizQuestions = getQuizQuestions(detectedPlant);
 
   // Reiniciar el quiz cada vez que se abre (cuando capturedImage cambia)
   useEffect(() => {
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
     setCorrectAnswers(0);
+    setAnsweredQuestions(0);
     setShowResult(false);
   }, [capturedImage]);
 
-  const currentQuestion = unifiedQuizQuestions[currentQuestionIndex];
-  const totalQuestions = unifiedQuizQuestions.length;
-  const progressPercentage = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+  const currentQuestion = quizQuestions[currentQuestionIndex];
+  const totalQuestions = quizQuestions.length;
+  const progressPercentage = (answeredQuestions / totalQuestions) * 100;
 
   const handleAnswerClick = (answerIndex: number) => {
     if (selectedAnswer !== null) return;
@@ -52,6 +57,9 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant 
       setCorrectAnswers(prev => prev + 1);
     }
 
+    // Incrementar preguntas respondidas
+    setAnsweredQuestions(prev => prev + 1);
+
     // Avanzar a la siguiente pregunta después de 2 segundos
     setTimeout(() => {
       if (currentQuestionIndex < totalQuestions - 1) {
@@ -67,6 +75,7 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant 
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
     setCorrectAnswers(0);
+    setAnsweredQuestions(0);
     setShowResult(false);
   };
 
@@ -125,7 +134,7 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant 
   const renderImageWithText = (question: UnifiedQuestion) => {
     const answers = question.answers as string[];
 
-    // Usar imagen capturada para la primera pregunta si está disponible
+    // Usar imagen capturada solo para la primera pregunta de identificación de planta
     const imageToShow = question.id === 1 && capturedImage
       ? capturedImage
       : question.questionImageUrl;
@@ -199,7 +208,7 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant 
           ></div>
         </div>
         <p className="progress-text">
-          Pregunta {currentQuestionIndex + 1} de {totalQuestions}
+          {answeredQuestions} de {totalQuestions} preguntas respondidas
         </p>
       </div>
 

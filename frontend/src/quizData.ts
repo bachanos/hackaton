@@ -278,3 +278,195 @@ export const unifiedQuizQuestions: UnifiedQuestion[] = [
       'Ceres es el objeto más grande del cinturón de asteroides y el único planeta enano situado en el sistema solar interior.',
   },
 ];
+
+// Nueva estructura para preguntas categorizadas por planta
+export interface PlantQuizCategory {
+  general: UnifiedQuestion[];
+  romero: UnifiedQuestion[];
+  menta: UnifiedQuestion[];
+}
+
+// Preguntas generales que se muestran para ambas plantas
+const generalQuestions: UnifiedQuestion[] = [
+  {
+    id: 1,
+    type: 'image-with-text',
+    questionText:
+      '¿Qué tipo de planta es la que aparece en esta imagen que acabas de capturar?',
+    answers: ['Menta', 'Romero', 'Lavanda', 'Albahaca'],
+    correctAnswer: 0, // Se ajustará dinámicamente según la planta detectada
+    explanation:
+      'La identificación correcta de plantas es fundamental para su cuidado adecuado.',
+  },
+  {
+    id: 2,
+    type: 'image-with-text',
+    questionText:
+      'Eres agricultor en Zaragoza y tienes delante el gráfico anual de humedad relativa, temperatura y precipitaciones. ¿Qué cultivo sería más adecuado plantar en estas condiciones?',
+    questionImageUrl: '/images/zaragoza-climate-data.png',
+    answers: [
+      'Arroz (necesita suelos permanentemente inundados, alta humedad)',
+      'Olivo (resistente a la sequía y altas temperaturas)',
+      'Té (necesita clima húmedo y estable)',
+      'Arándanos (prefieren climas frescos y húmedos todo el año)',
+    ],
+    correctAnswer: 1,
+    explanation:
+      'El olivo es un cultivo mediterráneo que se adapta muy bien a climas como el de Zaragoza, caracterizado por veranos secos y calurosos, baja humedad relativa y lluvias principalmente en otoño e invierno. Esto lo hace mucho más adecuado que cultivos que requieren humedad constante o temperaturas frescas.',
+  },
+  {
+    id: 3,
+    type: 'text-with-images',
+    questionText:
+      '¿Cuál es el factor más importante para el riego inteligente?',
+    answers: [
+      {
+        id: 1,
+        text: 'Solo la temperatura',
+        imageUrl:
+          'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop',
+      },
+      {
+        id: 2,
+        text: 'Humedad del suelo y clima',
+        imageUrl:
+          'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
+      },
+      {
+        id: 3,
+        text: 'Solo el tamaño de la maceta',
+        imageUrl:
+          'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&h=300&fit=crop',
+      },
+      {
+        id: 4,
+        text: 'Solo la estación del año',
+        imageUrl:
+          'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
+      },
+    ],
+    correctAnswerId: 2,
+    explanation:
+      'El riego inteligente considera múltiples factores: humedad del suelo, temperatura, humedad ambiental y las necesidades específicas de cada planta.',
+  },
+];
+
+// Preguntas específicas para romero
+const romeroQuestions: UnifiedQuestion[] = [
+  {
+    id: 4,
+    type: 'text-with-images',
+    questionText: '¿Cuál es la característica más distintiva del romero?',
+    answers: [
+      {
+        id: 1,
+        text: 'Hojas grandes y redondas',
+        imageUrl:
+          'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=300&fit=crop',
+      },
+      {
+        id: 2,
+        text: 'Hojas en forma de aguja y aromáticas',
+        imageUrl:
+          'https://images.unsplash.com/photo-1594736797933-d0e501ba2fe8?w=400&h=300&fit=crop',
+      },
+      {
+        id: 3,
+        text: 'Flores muy grandes',
+        imageUrl:
+          'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&h=300&fit=crop',
+      },
+      {
+        id: 4,
+        text: 'Tallos muy gruesos',
+        imageUrl:
+          'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
+      },
+    ],
+    correctAnswerId: 2,
+    explanation:
+      'El romero se caracteriza por sus hojas en forma de aguja, muy aromáticas y de color verde oscuro.',
+  },
+  {
+    id: 5,
+    type: 'image-with-text',
+    questionText: '¿Con qué frecuencia debe regarse el romero?',
+    questionImageUrl:
+      'https://images.unsplash.com/photo-1594736797933-d0e501ba2fe8?w=600&h=400&fit=crop',
+    answers: [
+      'Diariamente',
+      'Cuando el suelo esté seco',
+      'Solo en verano',
+      'Una vez por semana siempre',
+    ],
+    correctAnswer: 1,
+    explanation:
+      'El romero prefiere suelos bien drenados y debe regarse solo cuando el suelo esté seco, ya que es resistente a la sequía.',
+  },
+];
+
+// Preguntas específicas para menta
+const mentaQuestions: UnifiedQuestion[] = [
+  {
+    id: 6,
+    type: 'text-with-images',
+    questionText: '¿Qué característica principal tiene la menta?',
+    answers: [
+      {
+        id: 1,
+        text: 'Hojas dentadas y aromáticas',
+        imageUrl:
+          'https://images.unsplash.com/photo-1628626617617-6ba8c9b5dc12?w=400&h=300&fit=crop',
+      },
+      {
+        id: 2,
+        text: 'Hojas lisas sin aroma',
+        imageUrl:
+          'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
+      },
+      {
+        id: 3,
+        text: 'Hojas muy pequeñas',
+        imageUrl:
+          'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&h=300&fit=crop',
+      },
+      {
+        id: 4,
+        text: 'Hojas de color rojo',
+        imageUrl:
+          'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
+      },
+    ],
+    correctAnswerId: 1,
+    explanation:
+      'La menta se caracteriza por sus hojas dentadas, muy aromáticas y de color verde brillante.',
+  },
+  {
+    id: 7,
+    type: 'image-with-text',
+    questionText: '¿Qué tipo de suelo prefiere la menta?',
+    questionImageUrl:
+      'https://images.unsplash.com/photo-1628626617617-6ba8c9b5dc12?w=600&h=400&fit=crop',
+    answers: [
+      'Suelo muy seco',
+      'Suelo húmedo y bien drenado',
+      'Solo arena',
+      'Suelo arcilloso puro',
+    ],
+    correctAnswer: 1,
+    explanation:
+      'La menta prefiere suelos húmedos pero bien drenados, y necesita más agua que plantas como el romero.',
+  },
+];
+
+// Función para obtener las preguntas según la planta detectada
+export const getQuizQuestions = (detectedPlant?: string): UnifiedQuestion[] => {
+  const specificQuestions =
+    detectedPlant === 'romero'
+      ? romeroQuestions
+      : detectedPlant === 'menta'
+      ? mentaQuestions
+      : [];
+
+  return [...generalQuestions, ...specificQuestions];
+};

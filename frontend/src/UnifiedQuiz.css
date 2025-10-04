@@ -115,10 +115,11 @@
 .quiz-image-large {
   width: 100%;
   height: auto;
-  min-height: 350px; /* Altura mínima para mantener consistencia */
+  max-height: 400px; /* Altura máxima en lugar de mínima */
   border-radius: 8px;
-  object-fit: cover;
+  object-fit: contain; /* Mantener proporciones sin recortar */
   border: 2px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.05); /* Fondo sutil para imágenes con transparencia */
 }
 
 .image-quiz-answers {
