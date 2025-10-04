@@ -30,12 +30,6 @@ interface WateringData {
   };
 }
 
-
-
-
-
-
-
 // Función para mapear los valores de detección a los formatos esperados por el quiz
 const mapDetectedPlantToQuizFormat = (detectedPlant: string): string => {
   const plantMapping: { [key: string]: string } = {
@@ -78,12 +72,6 @@ function App() {
     enumerateCameras();
     fetchWateringData(); // Cargar datos iniciales para mostrar la barra superior
   }, []);
-
-
-
-
-
-
 
   const fetchWateringData = async () => {
     setLoading(true);
@@ -244,10 +232,6 @@ function App() {
     }
   };
 
-
-
-
-
   // Función para capturar imagen de la webcam
   const captureImage = (): string | null => {
     const video = document.querySelector('video.webcam-feed') as HTMLVideoElement;
@@ -318,8 +302,8 @@ function App() {
 
           {/* Centro: Título principal */}
           <div className="hero-center">
-            <h1>🌱 Sistema de Riego Automatizado</h1>
-            <p>Con tecnología de APIs de la NASA y datos meteorológicos en tiempo real</p>
+            <h1>🌱 Not just water</h1>
+            <p>Un enfoque integral para el riego de plantas</p>
           </div>
 
           {/* Lado derecho: Datos meteorológicos */}

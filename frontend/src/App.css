@@ -74,17 +74,17 @@ body {
 
 /* Estilos para el título en el hero */
 .hero-center h1 {
-  font-size: 1.8rem;
-  margin-bottom: 0.3rem;
-  background: linear-gradient(45deg, #00d4ff, #00ff88);
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, #164C32, #6A7642);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .hero-center p {
-  font-size: 0.9rem;
-  opacity: 0.8;
+  font-size: 1.1rem;
+  opacity: 0.85;
   margin: 0;
 }
 
@@ -1004,7 +1004,7 @@ body {
 
 .camera-hint {
   font-size: 0.8rem;
-  color: rgba(255, 193, 7, 0.8);
+  color: rgba(255, 255, 255, 0.8);
   margin: 0;
   font-style: italic;
 }
