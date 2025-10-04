@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 // Cargar variables de entorno
 dotenv.config({ path: '../.env' });
 
+import { getTemperatureData } from './nasa-power';
+
 // Interfaces para tipar las respuestas de las APIs
 interface OpenMeteoResponse {
   hourly: {
@@ -413,6 +415,33 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     cache_size: cache.size,
   });
+});
+
+app.get('/api/temperature-alert', async (req, res) => {
+  const lat = parseFloat(req.query.lat as string) || 41.6836; // Coordenadas de EINA por defecto
+  const lon = parseFloat(req.query.lon as string) || -0.8881;
+
+  try {
+    const temperatureData = await getTemperatureData(lat, lon);
+
+    // Lógica simple de alerta: si algún día la temperatura media fue < 5°C
+    const isColdAlert = temperatureData.some((day: { temp_avg: number }) => day.temp_avg < 5);
+    const message = isColdAlert
+      ? '¡Alerta! Se han registrado temperaturas muy frías en los últimos 7 días.'
+      : 'Las temperaturas han sido moderadas en los últimos 7 días.';
+
+    res.json({
+      location: { lat, lon },
+      alert: {
+        isAlert: isColdAlert,
+        message: message,
+      },
+      data: temperatureData,
+    });
+  } catch (error) {
+    console.error('❌ Error al generar la alerta de temperatura:', error);
+    res.status(500).json({ error: 'No se pudieron obtener los datos de temperatura de la NASA.' });
+  }
 });
 
 // Servir archivos estáticos del frontend en producción
