@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { getQuizQuestions, UnifiedQuestion, Answer } from './quizData';
 import './UnifiedQuiz.css';
 
@@ -14,6 +15,8 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [isIrrigating, setIsIrrigating] = useState(false);
+  const [irrigationStatus, setIrrigationStatus] = useState<string | null>(null);
 
   // Generar preguntas según la planta detectada
   const quizQuestions = getQuizQuestions(detectedPlant);
@@ -68,6 +71,13 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
         setSelectedAnswer(null);
       } else {
         setShowResult(true);
+        // Verificar si pasó el quiz para activar riego automático
+        const finalCorrectAnswers = isCorrect ? correctAnswers + 1 : correctAnswers;
+        if (finalCorrectAnswers >= Math.ceil(totalQuestions / 2)) {
+          setTimeout(() => {
+            triggerAutoIrrigation();
+          }, 1000); // Esperar 1 segundo después de mostrar resultado
+        }
       }
     }, 2000);
   };
@@ -78,6 +88,22 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
     setCorrectAnswers(0);
     setAnsweredQuestions(0);
     setShowResult(false);
+    setIrrigationStatus(null);
+  };
+
+  const triggerAutoIrrigation = async () => {
+    setIsIrrigating(true);
+    try {
+      console.log('💧 Activando riego automático...');
+      const response = await axios.get('/api/irrigate');
+      console.log('✅ Riego activado:', response.data);
+      setIrrigationStatus('success');
+    } catch (error) {
+      console.error('❌ Error activando riego:', error);
+      setIrrigationStatus('error');
+    } finally {
+      setIsIrrigating(false);
+    }
   };
 
   if (showResult) {
@@ -95,11 +121,35 @@ const UnifiedQuiz: React.FC<UnifiedQuizProps> = ({ capturedImage, detectedPlant,
               </p>
               <p className="success-message">
                 ¡Excelente! Has demostrado que conoces bien el cuidado de las plantas.
-                Tu planta será regada automáticamente.
               </p>
+              
+              {/* Estado del riego automático */}
+              <div className="irrigation-status">
+                {isIrrigating && (
+                  <p className="irrigating-message">
+                    💧 Activando riego automático...
+                  </p>
+                )}
+                {irrigationStatus === 'success' && (
+                  <p className="irrigation-success">
+                    ✅ ¡Riego automático activado! Tu planta ha sido regada.
+                  </p>
+                )}
+                {irrigationStatus === 'error' && (
+                  <p className="irrigation-error">
+                    ❌ Error al activar el riego automático. Puedes intentar el riego manual.
+                  </p>
+                )}
+                {!isIrrigating && !irrigationStatus && (
+                  <p className="irrigation-pending">
+                    💧 Activando riego automático...
+                  </p>
+                )}
+              </div>
+              
               <div className="result-actions">
                 <button onClick={onClose} className="secondary-btn">
-                  🔄 Genial!
+                  🔄 Continuar
                 </button>
               </div>
             </>

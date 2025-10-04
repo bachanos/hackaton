@@ -450,6 +450,44 @@ app.get('/api/temperature-alert', async (req, res) => {
   }
 });
 
+// Endpoint para activar riego automático
+app.get('/api/irrigate', async (req, res) => {
+  try {
+    console.log('💧 Activando riego automático...');
+    
+    // Llamar al mock_ai_server.py que se comunica con el Arduino
+    const response = await fetch('http://localhost:5001/irrigate', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('✅ Riego activado:', data);
+
+    res.json({
+      success: true,
+      message: 'Riego automático activado correctamente',
+      arduino_response: data,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('❌ Error activando riego:', error);
+    res.status(500).json({
+      success: false,
+      error: 'No se pudo activar el riego automático',
+      details: error instanceof Error ? error.message : 'Error desconocido',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Servir archivos estáticos del frontend en producción
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('../frontend/dist'));
@@ -465,4 +503,5 @@ app.listen(PORT, () => {
   console.log(`   GET /api/watering-calculation?lat=40.4168&lon=-3.7038`);
   console.log(`   GET /api/apod`);
   console.log(`   GET /api/health`);
+  console.log(`   GET /api/irrigate - Activar riego automático`);
 });
