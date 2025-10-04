@@ -328,9 +328,9 @@ function App() {
           {/* Panel de detección automática */}
           <div className="vision-panel">
             <div className="vision-content">
-              <div className="vision-layout">
-                {/* Columna izquierda: Cámara */}
-                <div className="camera-column">
+              <div className="vision-layout-centered">
+                {/* Cámara centrada */}
+                <div className="camera-column-centered">
                   <div className="unified-camera-container">
                     {/* Mostrar imagen capturada si existe, sino mostrar webcam */}
                     {capturedImage ? (
@@ -410,34 +410,6 @@ function App() {
                       </div>
                     )}
                   </div>
-                </div>
-
-                {/* Columna derecha: Información de riego o placeholder */}
-                <div className="info-column">
-                  {wateringData && capturedImage ? (
-                    <div className="result-card main-result compact">
-                      <h2>💧 Agua Necesaria Hoy</h2>
-                      <div className="big-number">{wateringData.requiredMl} ml</div>
-                      <p>Para {wateringData.plant.name} en maceta de {wateringData.potSize}cm</p>
-                      <div className="plant-summary">
-                        <span className="plant-desc-small">{wateringData.plant.description}</span>
-                      </div>
-                      <button
-                        className="cta-calculation"
-                        onClick={() => {
-                          const explanationSection = document.querySelector('.irrigation-explanation');
-                          explanationSection?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                      >
-                        🧠 ¿Cómo se calcula esto?
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="info-placeholder">
-                      <div className="placeholder-icon">�</div>
-                      <p>Captura una imagen de tu planta para ver los cálculos de riego</p>
-                    </div>
-                  )}
                 </div>
               </div>
 

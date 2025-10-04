@@ -622,6 +622,20 @@ body {
   gap: 0.4rem;
 }
 
+/* Layout centrado para la cámara */
+.vision-layout-centered {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.camera-column-centered {
+  width: 320px; /* Menos ancho que los 400px originales */
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
 .info-column {
   flex: 1; /* Toma el espacio restante */
   display: flex;
@@ -699,6 +713,11 @@ body {
   background: rgba(0, 0, 0, 0.3);
   width: 100%;
   height: 320px;
+}
+
+/* Vista de cámara centrada con más altura */
+.camera-column-centered .camera-view {
+  height: 420px; /* Más alta que los 320px originales */
 }
 
 /* Placeholder para la columna de información */
