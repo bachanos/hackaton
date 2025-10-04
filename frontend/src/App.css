@@ -23,13 +23,69 @@ body {
   padding: 20px;
 }
 
+/* Hero sticky que combina header + ubicación + datos meteorológicos */
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1100; /* Más alto que el modal (1000) para mantenerse encima */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.95); /* Más opaco para mejor contraste */
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Sombra para separación visual */
+  box-sizing: border-box; /* Incluir padding en el width total */
+}
+
+.hero-left, .hero-right {
+  flex: 0 0 250px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-right {
+  justify-content: flex-end;
+  padding-right: 1rem; /* Mover weather-data más a la izquierda */
+}
+
+.hero-center {
+  flex: 1;
+  text-align: center;
+  padding: 0 2rem;
+}
+
 .header {
   text-align: center;
   margin-bottom: 2rem;
   padding: 2rem 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   border-radius: 20px;
   backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos para el título en el hero */
+.hero-center h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+  background: linear-gradient(45deg, #00d4ff, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-center p {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin: 0;
 }
 
 .header h1 {
@@ -829,7 +885,7 @@ body {
   background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: flex-start;
-  padding-top: 5vh;
+  padding-top: 12vh; /* Aumentado de 5vh a 12vh para bajar el modal */
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(5px);

@@ -291,38 +291,47 @@ function App() {
   return (
     <div className="app">
       <div className="overlay">
-        <header className="header">
-          <h1>🌱 Sistema de Riego Automatizado</h1>
-          <p>Con tecnología de APIs de la NASA y datos meteorológicos en tiempo real</p>
-        </header>
-
-        {/* Información integrada: ubicación + datos meteorológicos */}
-        {wateringData && (
-          <div className="top-info-bar">
-            <div className="location-summary">
-              <div className="location-icon">📍</div>
-              <div className="location-text">
-                <span className="location-name">EINA - Zaragoza</span>
-                <span className="location-coords">{coordinates.lat.toFixed(2)}°N {Math.abs(coordinates.lon).toFixed(2)}°O</span>
+        {/* Hero sticky que combina header + ubicación + datos meteorológicos */}
+        <div className="hero-sticky">
+          {/* Lado izquierdo: Ubicación */}
+          <div className="hero-left">
+            {wateringData && (
+              <div className="location-summary">
+                <div className="location-icon">📍</div>
+                <div className="location-text">
+                  <span className="location-name">EINA - Zaragoza</span>
+                  <span className="location-coords">{coordinates.lat.toFixed(2)}°N {Math.abs(coordinates.lon).toFixed(2)}°O</span>
+                </div>
               </div>
-            </div>
-
-            <div className="weather-data">
-              <div className="data-item">
-                <span className="data-icon">🌡️</span>
-                <span className="data-value">{wateringData.currentTemp}°C</span>
-              </div>
-              <div className="data-item">
-                <span className="data-icon">💨</span>
-                <span className="data-value">{wateringData.currentHumidity}%</span>
-              </div>
-              <div className="data-item">
-                <span className="data-icon">🧮</span>
-                <span className="data-value">{wateringData.calculation.etcPlant.toFixed(2)} mm</span>
-              </div>
-            </div>
+            )}
           </div>
-        )}
+
+          {/* Centro: Título principal */}
+          <div className="hero-center">
+            <h1>🌱 Sistema de Riego Automatizado</h1>
+            <p>Con tecnología de APIs de la NASA y datos meteorológicos en tiempo real</p>
+          </div>
+
+          {/* Lado derecho: Datos meteorológicos */}
+          <div className="hero-right">
+            {wateringData && (
+              <div className="weather-data">
+                <div className="data-item">
+                  <span className="data-icon">🌡️</span>
+                  <span className="data-value">{wateringData.currentTemp}°C</span>
+                </div>
+                <div className="data-item">
+                  <span className="data-icon">💨</span>
+                  <span className="data-value">{wateringData.currentHumidity}%</span>
+                </div>
+                <div className="data-item">
+                  <span className="data-icon">🧮</span>
+                  <span className="data-value">{wateringData.calculation.etcPlant.toFixed(2)} mm</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         <main className="main-content">
           {/* Panel de detección automática */}

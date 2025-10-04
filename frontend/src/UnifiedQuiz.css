@@ -46,9 +46,10 @@
 
 /* Estilos para preguntas (tomados de Quiz.css) */
 .question-container h3 {
-  font-size: 1.8rem;
+  font-size: 1.1rem; /* Reducido considerablemente para mejor legibilidad */
   font-weight: 600;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem; /* También reducido el margen inferior */
+  line-height: 1.4; /* Mejor espaciado entre líneas para textos largos */
 }
 
 /* Estilos para respuestas tipo imagen (tomados de Quiz.css) */
