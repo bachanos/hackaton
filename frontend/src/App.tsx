@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './App.css';
+import Quiz from './Quiz';
 
 interface WateringData {
   requiredMl: number;
@@ -334,6 +335,8 @@ function App() {
           <h1>🌱 Sistema de Riego Automatizado</h1>
           <p>Con tecnología de APIs de la NASA y datos meteorológicos en tiempo real</p>
         </header>
+
+        <Quiz />
 
         <main className="main-content">
           {/* Panel de configuración */}

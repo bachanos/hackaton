@@ -1,0 +1,99 @@
+.quiz-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1a202c;
+  color: white;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.question-container h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 2.5rem;
+}
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.answer-card {
+  background-color: #2d3748;
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  border: 3px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.answer-card:hover {
+  transform: translateY(-5px);
+  border-color: #4a5568;
+}
+
+.answer-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.answer-card p {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.answer-card.correct {
+  border-color: #48bb78; /* Green */
+  background-color: #2f4c3a;
+}
+
+.answer-card.incorrect {
+  border-color: #f56565; /* Red */
+  background-color: #5c3030;
+}
+
+.result-container {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background-color: #2d3748;
+  border-radius: 10px;
+}
+
+.result-container h4 {
+  font-size: 1.6rem;
+  margin-top: 0;
+  color: #48bb78; /* Green for correct */
+}
+
+.result-container p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.result-container button {
+  background-color: #4299e1; /* Blue */
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.result-container button:hover {
+  background-color: #3182ce;
+}
