@@ -356,59 +356,40 @@ const romeroQuestions: UnifiedQuestion[] = [
   {
     id: 4,
     type: 'text-with-images',
-    questionText: '¿Cuál es la característica más distintiva del romero?',
+    questionText:
+      'Tienes una pequeña maceta de Romero. La alerta de los satélites de la NASA indica que la humedad del suelo es MUY ALTA y ha habido días nublados y frescos. ¿Cuál de estas imágenes muestra el Romero que está sufriendo estrés por exceso de agua y falta de sol, y por lo tanto necesita dejar de regar y revisar el drenaje?',
     answers: [
       {
         id: 1,
-        text: 'Hojas grandes y redondas',
-        imageUrl:
-          'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=300&fit=crop',
+        text: 'Romero con hojas mustias y caídas (hojas flácidas)',
+        imageUrl: '/images/romeroBad.jpeg',
       },
       {
         id: 2,
-        text: 'Hojas en forma de aguja y aromáticas',
-        imageUrl:
-          'https://images.unsplash.com/photo-1594736797933-d0e501ba2fe8?w=400&h=300&fit=crop',
+        text: 'Romero verde y erguido con hojas firmes',
+        imageUrl: '/images/romeroOk1.jpeg',
       },
       {
         id: 3,
-        text: 'Flores muy grandes',
-        imageUrl:
-          'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&h=300&fit=crop',
+        text: 'Romero con hojas secas y amarillas',
+        imageUrl: '/images/romeroOk2.jpeg',
       },
       {
         id: 4,
-        text: 'Tallos muy gruesos',
-        imageUrl:
-          'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
+        text: 'Romero floreciendo abundantemente',
+        imageUrl: '/images/romeroOk3.jpeg',
       },
     ],
-    correctAnswerId: 2,
+    correctAnswerId: 1,
     explanation:
-      'El romero se caracteriza por sus hojas en forma de aguja, muy aromáticas y de color verde oscuro.',
-  },
-  {
-    id: 5,
-    type: 'image-with-text',
-    questionText: '¿Con qué frecuencia debe regarse el romero?',
-    questionImageUrl:
-      'https://images.unsplash.com/photo-1594736797933-d0e501ba2fe8?w=600&h=400&fit=crop',
-    answers: [
-      'Diariamente',
-      'Cuando el suelo esté seco',
-      'Solo en verano',
-      'Una vez por semana siempre',
-    ],
-    correctAnswer: 1,
-    explanation:
-      'El romero prefiere suelos bien drenados y debe regarse solo cuando el suelo esté seco, ya que es resistente a la sequía.',
+      'El romero con hojas mustias y caídas (flácidas) indica estrés por exceso de agua. A diferencia de la sequía que causa hojas secas, el exceso de agua hace que las raíces no puedan absorber oxígeno, causando que las hojas se vean sin vida y colgantes. Los datos de satélites NASA sobre humedad del suelo son cruciales para detectar este problema.',
   },
 ];
 
 // Preguntas específicas para menta
 const mentaQuestions: UnifiedQuestion[] = [
   {
-    id: 6,
+    id: 7,
     type: 'text-with-images',
     questionText: '¿Qué característica principal tiene la menta?',
     answers: [
@@ -442,7 +423,7 @@ const mentaQuestions: UnifiedQuestion[] = [
       'La menta se caracteriza por sus hojas dentadas, muy aromáticas y de color verde brillante.',
   },
   {
-    id: 7,
+    id: 8,
     type: 'image-with-text',
     questionText: '¿Qué tipo de suelo prefiere la menta?',
     questionImageUrl:
