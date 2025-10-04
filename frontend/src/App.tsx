@@ -467,7 +467,7 @@ function App() {
                 >
                   ✕
                 </button>
-                <UnifiedQuiz capturedImage={capturedImage} detectedPlant={selectedPlant} />
+                <UnifiedQuiz capturedImage={capturedImage} detectedPlant={wateringData?.plant?.name  } />
               </div>
             </div>
           )}
