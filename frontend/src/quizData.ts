@@ -423,45 +423,16 @@ const mentaQuestions: UnifiedQuestion[] = [
 
 // Función para obtener las preguntas según la planta detectada
 export const getQuizQuestions = (detectedPlant?: string): UnifiedQuestion[] => {
-  console.log('🐛 DEBUG getQuizQuestions - detectedPlant:', detectedPlant);
-  console.log('🐛 DEBUG - typeof detectedPlant:', typeof detectedPlant);
-  console.log('🐛 DEBUG - detectedPlant length:', detectedPlant?.length);
-  console.log('🐛 DEBUG - detectedPlant JSON:', JSON.stringify(detectedPlant));
-  console.log(
-    '🐛 DEBUG - detectedPlant === "romero":',
-    detectedPlant === 'romero'
-  );
-  console.log(
-    '🐛 DEBUG - detectedPlant === "menta":',
-    detectedPlant === 'menta'
-  );
 
   let specificQuestions: UnifiedQuestion[] = [];
 
   if (detectedPlant === 'romero') {
     specificQuestions = romeroQuestions;
-    console.log('🐛 DEBUG - Usando preguntas de ROMERO');
   } else if (detectedPlant === 'menta') {
     specificQuestions = mentaQuestions;
-    console.log('🐛 DEBUG - Usando preguntas de MENTA');
-  } else {
-    console.log(
-      '🐛 DEBUG - No se detectó planta específica, usando array vacío'
-    );
   }
 
-  console.log('🐛 DEBUG - specificQuestions length:', specificQuestions.length);
-  console.log(
-    '🐛 DEBUG - specificQuestions titles:',
-    specificQuestions.map(q => q.questionText.substring(0, 50) + '...')
-  );
-
   const allQuestions = [...generalQuestions, ...specificQuestions];
-  console.log('🐛 DEBUG - total questions:', allQuestions.length);
-  console.log(
-    '🐛 DEBUG - all question titles:',
-    allQuestions.map(q => q.questionText.substring(0, 50) + '...')
-  );
 
   return allQuestions;
 };
