@@ -3,6 +3,7 @@ from flask_cors import CORS
 import uuid
 import time
 import random
+import serial
 
 app = Flask(__name__)
 CORS(app)  # Permitir CORS para que el backend Node.js pueda llamar
@@ -21,7 +22,7 @@ MOCK_PLANTS = {
     }
 }
 
-ARDUINO_PORT = '/dev/cu.usbserial-110'   # Cambia según tu sistema
+ARDUINO_PORT = 'COM5'   # Cambia según tu sistema
 BAUDRATE = 9600
 arduino = None
 
@@ -72,7 +73,7 @@ def irrigate():
 
     try:
         arduino.write(b'1')
-        time.sleep(1)
+        time.sleep(5)
         arduino.write(b'0')
 
         response_line = ""
@@ -118,11 +119,11 @@ def classify_plant():
             "confidence": plant_data['confidence']
         }
 
-        print(f"🧠 IA Mock clasificó: {plant_type} (confianza: {plant_data['confidence']})")
+        print(f"IA Mock clasificó: {plant_type} (confianza: {plant_data['confidence']})")
         return jsonify(response)
 
     except Exception as e:
-        print(f"❌ Error en clasificación: {e}")
+        print(f"Error en clasificación: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/health', methods=['GET'])
@@ -153,13 +154,13 @@ def toggle_plant():
         return jsonify({"error": "Planta no disponible"}), 400
 
 if __name__ == '__main__':
-    print("🤖 Iniciando servicio de Plant Vision Mock...")
-    print("📡 Endpoints disponibles:")
+    print("Iniciando servicio de Plant Vision Mock...")
+    print("Endpoints disponibles:")
     print("   POST /classify - Clasificar planta (siempre devuelve romero)")
     print("   GET /health - Estado del servicio")
     print("   GET /humidity - Obtener humedad del Arduino")
     print("   POST /irrigate - Enviar comando riego 'R' al Arduino")
     print("   POST /toggle-plant - Cambiar planta manualmente")
-    print("🚀 Servidor corriendo en http://localhost:5001")
+    print("Servidor corriendo en http://localhost:5001")
 
     app.run(host='0.0.0.0', port=5001, debug=False)
