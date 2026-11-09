@@ -39,7 +39,7 @@ const AI_CONFIG = {
   // URLs de servicios
   mockUrl: "http://localhost:5001/classify",
   roboflowUrl: "https://classify.roboflow.com/hierbasclasificacion-1zi8c/4",
-  roboflowApiKey: process.env.ROBOFLOW_API_KEY || '',
+  roboflowApiKey: "lKEZ8eMejWukFusx5JJO",
 
   // Configuraciones adicionales
   timeout: 10000, // 10 segundos
